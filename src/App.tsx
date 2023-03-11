@@ -15,6 +15,7 @@ export default () => {
       (body.style.backgroundPositionX = 0 as any);
     body.style.backgroundPositionY = 0 as any;
     body.style.backgroundSize = 'cover';
+    body.style.backgroundAttachment = 'fixed';
 
     const containerEl = document.getElementsByClassName('container')[0];
     const parallaxInst = new Parallax(containerEl as HTMLElement, {
