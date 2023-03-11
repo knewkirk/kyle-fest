@@ -7,12 +7,16 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.png/,
+        test: /\.(png|jpg)/,
         type: 'asset/resource',
         generator: {
           publicPath: '/images/',
           outputPath: '../public/images/'
         }
+      },
+      {
+        test: /\.svg/,
+        type: 'asset/inline',
       },
       {
         test: /\.tsx?$/,

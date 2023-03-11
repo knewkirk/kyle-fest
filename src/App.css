@@ -1,20 +1,39 @@
+body {
+  margin: 0;
+}
+
 .container {
   text-align: center;
 }
 
-h1 {
-  font-size: 56px;
-  margin: 8px auto;
+p {
+  color: transparent;
+  filter: invert(1);
+  margin: 0;
 }
 
-h2 {
+.headline {
+  font-size: 56px;
+}
+
+.subheadline {
   font-size: 28px;
 }
 
-h3 {
+.location {
   font-size: 42px;
 }
 
-img {
+svg {
+  height: 100%;
   width: 50%;
+}
+
+i {
+  width: 50%;
+  height: 500px;
+  display: block;
+  fill: none;
+  filter: invert(1);
+  margin: 0 auto;
 }
