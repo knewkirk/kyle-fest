@@ -8,7 +8,7 @@ import clouds from './images/clouds.jpg';
 import map from './images/map.svg';
 
 const bgStyle = {
-  background: `url(${clouds})`,
+  background: `url(${clouds}) 0 0 / cover`,
 };
 
 const textStyle = {
