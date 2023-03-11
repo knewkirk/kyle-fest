@@ -7,6 +7,14 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.png/,
+        type: 'asset/resource',
+        generator: {
+          publicPath: '/images/',
+          outputPath: '../public/images/'
+        }
+      },
+      {
         test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/,
