@@ -4,36 +4,54 @@ body {
 
 .container {
   text-align: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.layer {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  display: block;
 }
 
 p {
-  color: transparent;
-  filter: invert(1);
+  color: gold;
   margin: 0;
+  text-shadow: 0 8px 6px rgb(0 0 0 / 60%);
 }
 
 .headline {
   font-size: 56px;
+  position: absolute;
+  top: 20%;
+  width: 100%;
 }
 
 .subheadline {
+  position: absolute;
   font-size: 28px;
+  top: 30%;
+  width: 100%;
 }
 
 .location {
+  position: absolute;
   font-size: 42px;
+  top: 45%;
+  width: 100%;
 }
 
-svg {
-  height: 100%;
+.map {
+  fill: gold;
+  position: absolute;
   width: 50%;
-}
-
-i {
-  width: 50%;
-  height: 500px;
-  display: block;
-  fill: none;
-  filter: invert(1);
-  margin: 0 auto;
+  height: 75%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
 }

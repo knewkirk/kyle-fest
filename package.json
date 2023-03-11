@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/knewkirk/kyle-fest#readme",
   "dependencies": {
+    "parallax-js": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -29,6 +30,7 @@
     "@babel/core": "^7.21.0",
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
+    "@types/parallax-js": "^3.1.0",
     "@types/react": "^18.0.28",
     "babel-loader": "^9.1.2",
     "css-loader": "^6.7.3",

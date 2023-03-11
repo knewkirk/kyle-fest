@@ -1,39 +1,47 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
+
+import Parallax from 'parallax-js';
+
 import './App.css';
 
+import clouds from './images/clouds.jpg';
 import Map from './Map';
 
-// import map from './images/map.png';
-import clouds from './images/clouds.jpg';
-import map from './images/map.svg';
+export default () => {
+  useEffect(() => {
+    const body = document.getElementsByTagName('body')[0];
+    (body.style.backgroundImage = `url(${clouds})`),
+      (body.style.backgroundPositionX = 0 as any);
+    body.style.backgroundPositionY = 0 as any;
+    body.style.backgroundSize = 'cover';
 
-const bgStyle = {
-  background: `url(${clouds}) 0 0 / cover`,
+    const containerEl = document.getElementsByClassName('container')[0];
+    const parallaxInst = new Parallax(containerEl as HTMLElement, {
+      relativeInput: true,
+    });
+  });
+
+  return (
+    <div className="container">
+      <div className="layer" data-depth="0.4">
+        <Map className="map" />
+      </div>
+      <div className="layer" data-depth="0.6">
+        <p className="subheadline">
+          APRIL 8 &middot; 2PM
+        </p>
+      </div>
+      <div className="layer" data-depth="0.8">
+        <p className="location" data-depth="0.8">
+          SOUTHERN PACIFIC BREWING
+        </p>
+      </div>
+      <div className="layer" data-depth="1">
+        <p className="headline">
+          KYLE FEST 2023
+        </p>
+      </div>
+    </div>
+  );
 };
-
-const textStyle = {
-  ...bgStyle,
-  'background-clip': 'text',
-  '-webkit-background-clip': 'text',
-};
-
-export default () => (
-  <div className="container" style={bgStyle}>
-    <p className="headline" style={textStyle}>
-      KYLE FEST
-    </p>
-    <p className="subheadline" style={textStyle}>
-      APRIL 8, 2023 &middot; 2PM
-    </p>
-    <p className="location" style={textStyle}>
-      SOUTHERN PACIFIC BREWING
-    </p>
-    <i style={{
-      ...bgStyle,
-      mask: `url(${map})`,
-      // @ts-ignore
-      '-webkit-mask': `url(${map})`,
-      '-webkit-mask-size': '100%'
-    }} />
-  </div>
-);
