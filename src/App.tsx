@@ -10,13 +10,6 @@ import Map from './Map';
 
 export default () => {
   useEffect(() => {
-    const body = document.getElementsByTagName('body')[0];
-    (body.style.backgroundImage = `url(${clouds})`),
-      (body.style.backgroundPositionX = 0 as any);
-    body.style.backgroundPositionY = 0 as any;
-    body.style.backgroundSize = 'cover';
-    body.style.backgroundAttachment = 'fixed';
-
     const containerEl = document.getElementsByClassName('container')[0];
     const parallaxInst = new Parallax(containerEl as HTMLElement, {
       relativeInput: true,
@@ -25,6 +18,9 @@ export default () => {
 
   return (
     <div className="container">
+      <div className="layer" data-depth="0">
+        <img className="background" src={`${clouds}`}/>
+      </div>
       <div className="layer" data-depth="0.4">
         <Map className="map" />
       </div>
