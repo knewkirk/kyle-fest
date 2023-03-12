@@ -60,7 +60,7 @@ export default () => {
         </div>
       )}
       <div className={`container${isMobile ? ' mobile' : ''}`}>
-        <div className="layer" data-depth="0">
+        <div className="layer" data-depth="0.1">
           <img className="background" src={`${clouds}`} />
         </div>
         <div className="layer" data-depth="0.4">
