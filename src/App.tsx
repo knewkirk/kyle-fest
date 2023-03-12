@@ -7,12 +7,12 @@ import './App.css';
 
 import clouds from './images/clouds.jpg';
 import Map from './Map';
-import Star from './Star';
 
 export default () => {
   const [isMobile, setIsMobile] = useState(true);
   const [hasPermission, setHasPermission] = useState(false);
   const [didLoad, setDidLoad] = useState(false);
+  const [didSkip, setDidSkip] = useState(false);
 
   const initParallax = () => {
     const containerEl = document.getElementsByClassName('container')[0];
@@ -38,11 +38,11 @@ export default () => {
   });
 
   useEffect(() => {
-    if (!isMobile && didLoad) {
+    if (didSkip || (!isMobile && didLoad)) {
       setHasPermission(true);
       initParallax();
     }
-  }, [isMobile, didLoad]);
+  }, [isMobile, didLoad, didSkip]);
 
   useEffect(() => {
     setDidLoad(typeof window !== undefined);
@@ -50,12 +50,15 @@ export default () => {
 
   return (
     <>
-      {isMobile && !hasPermission && (
+      {isMobile && !hasPermission && !didSkip && (
         <div className="permission-scrim">
           {!hasPermission && (
-            <button className="permission-btn" onClick={requestPerms}>
-              I'M READY
-            </button>
+            <div className="btn-wrapper">
+              <button className="permission-btn" onClick={requestPerms}>
+                I'M READY
+              </button>
+              <button onClick={() => setDidSkip(true)}>skip</button>
+            </div>
           )}
         </div>
       )}
@@ -68,17 +71,25 @@ export default () => {
         </div>
         <div className="layer" data-depth="0.45">
           <div className="star-container">
-            <Star className="star" />
+            <p className="star" data-text="★">
+              ★
+            </p>
           </div>
         </div>
         <div className="layer" data-depth="0.7">
-          <p className="location">SOUTHERN PACIFIC BREWING</p>
+          <p className="location" data-text="SOUTHERN PACIFIC BREWING">
+            SOUTHERN PACIFIC BREWING
+          </p>
         </div>
         <div className="layer" data-depth="0.9">
-          <p className="subheadline">APRIL 8 &middot; 2PM</p>
+          <p className="subheadline" data-text="APRIL 8 &middot; 2PM">
+            APRIL 8 &middot; 2PM
+          </p>
         </div>
         <div className="layer" data-depth="1">
-          <p className="headline">KYLE FEST 2023</p>
+          <p className="headline" data-text="KYLE FEST 2023">
+            KYLE FEST 2023
+          </p>
         </div>
       </div>
     </>
