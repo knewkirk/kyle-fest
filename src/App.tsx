@@ -66,6 +66,9 @@ export default () => {
         <div className="layer" data-depth="0.1">
           <img className="background" src={`${clouds}`} />
         </div>
+        <div className="layer" data-depth="0.3">
+          <img className="rain" src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmRmZDI2ZWI4ZDQxMGIxZDNlZWZjZTY1YWM2YTRlMWZmN2E3MTJkZiZjdD1z/3ohhwutQL0CDTq3kKA/giphy.gif"/>
+        </div>
         <div className="layer" data-depth="0.4">
           <Map className="map" />
         </div>

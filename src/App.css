@@ -61,6 +61,13 @@ button {
   object-fit: cover;
 }
 
+.rain {
+  width: 110%;
+  height: 110%;
+  opacity: 0.8;
+  object-fit: cover;
+}
+
 p {
   margin: 0;
   line-height: 1em;
