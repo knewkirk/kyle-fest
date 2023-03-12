@@ -116,7 +116,7 @@ p {
   filter: drop-shadow(0 4px 8px #000e);
 }
 
-@media (min-width: 400px) {
+@media (min-width: 450px) {
   .subheadline {
     top: 30%;
   }
