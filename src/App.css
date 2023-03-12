@@ -19,20 +19,31 @@ body {
   right: 0;
   top: 0;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: space-between; */
   margin: auto;
   position: absolute;
   width: 260px;
   height: 300px;
 }
 
-button {
-  width: 120px;
-  height: 40px;
+.permission-btn {
+  font-size: 24px;
+  width: 240px;
+  height: 64px;
   background: #ecf6ff;
   border: none;
   border-radius: 5px;
   color: #0e1116;
+}
+
+.skip-btn {
+  font-size: 20px;
+  margin-top: 32px;
+  background: none;
+  border: none;
+  color: lightgray;
 }
 
 .container {
@@ -68,7 +79,7 @@ button {
   object-fit: cover;
 }
 
-p {
+.text {
   margin: 0;
   line-height: 1em;
 
@@ -85,7 +96,7 @@ p {
   color: #fff;
 }
 
-p::after {
+.text::after {
   background: none;
   content: attr(data-text);
   left: 0;
@@ -117,12 +128,13 @@ p::after {
 
 .subheadline {
   position: absolute;
-  font-size: 28px;
-  top: 40%;
+  font-size: 32px;
+  top: 38%;
   width: 100%;
 }
 
 .location {
+  pointer-events: auto;
   position: absolute;
   font-size: 36px;
   top: 50%;
@@ -141,6 +153,10 @@ p::after {
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.map-container {
+  pointer-events: auto;
 }
 
 .map {

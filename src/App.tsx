@@ -57,42 +57,52 @@ export default () => {
               <button className="permission-btn" onClick={requestPerms}>
                 I'M READY
               </button>
-              <button onClick={() => setDidSkip(true)}>skip</button>
+              <button className="skip-btn" onClick={() => setDidSkip(true)}>
+                skip
+              </button>
             </div>
           )}
         </div>
       )}
-      <div className={`container${isMobile ? ' mobile' : ''}`}>
+      <div className="container">
         <div className="layer" data-depth="0.1">
           <img className="background" src={`${clouds}`} />
         </div>
         <div className="layer" data-depth="0.3">
-          <img className="rain" src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmRmZDI2ZWI4ZDQxMGIxZDNlZWZjZTY1YWM2YTRlMWZmN2E3MTJkZiZjdD1z/3ohhwutQL0CDTq3kKA/giphy.gif"/>
+          <img
+            className="rain"
+            src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmRmZDI2ZWI4ZDQxMGIxZDNlZWZjZTY1YWM2YTRlMWZmN2E3MTJkZiZjdD1z/3ohhwutQL0CDTq3kKA/giphy.gif"
+          />
         </div>
         <div className="layer" data-depth="0.4">
-          <Map className="map" />
+          <a className="map-container" href="https://goo.gl/maps/2MqEVKvGFkBZfKii7" target="_blank">
+            <Map className="map" />
+          </a>
         </div>
         <div className="layer" data-depth="0.45">
           <div className="star-container">
-            <p className="star" data-text="★">
+            <p className="text star" data-text="★">
               ★
             </p>
           </div>
         </div>
-        <div className="layer" data-depth="0.7">
-          <p className="location" data-text="SOUTHERN PACIFIC BREWING">
-            SOUTHERN PACIFIC BREWING
-          </p>
-        </div>
         <div className="layer" data-depth="0.9">
-          <p className="subheadline" data-text="APRIL 8 &middot; 2PM">
+          <p className="text subheadline" data-text="APRIL 8 &middot; 2PM">
             APRIL 8 &middot; 2PM
           </p>
         </div>
         <div className="layer" data-depth="1">
-          <p className="headline" data-text="KYLE FEST 2023">
+          <p className="text headline" data-text="KYLE FEST 2023">
             KYLE FEST 2023
           </p>
+          <a
+            href="https://www.southernpacificbrewing.com/"
+            className="text location"
+            data-text="SOUTHERN PACIFIC BREWING"
+            target="_blank"
+          >
+            SOUTHERN PACIFIC BREWING
+          </a>
         </div>
       </div>
     </>
