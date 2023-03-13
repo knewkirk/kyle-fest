@@ -6,6 +6,7 @@ import Parallax from 'parallax-js';
 import './App.css';
 
 import clouds from './images/clouds.jpg';
+import cloud from './images/cloud-transparent.png';
 import Map from './Map';
 
 export default () => {
@@ -68,11 +69,24 @@ export default () => {
         <div className="layer" data-depth="0.1">
           <img className="background" src={`${clouds}`} />
         </div>
+        <div className="layer" data-depth="0.15">
+          <img className="cloud cloud-0" src={`${cloud}`} />
+        </div>
+        <div className="layer" data-depth="0.2">
+          <img className="cloud cloud-1" src={`${cloud}`} />
+          <img className="cloud cloud-2" src={`${cloud}`} />
+        </div>
+        <div className="layer" data-depth="0.25">
+          <img className="cloud cloud-3" src={`${cloud}`} />
+        </div>
         <div className="layer" data-depth="0.3">
           <img
             className="rain"
             src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmRmZDI2ZWI4ZDQxMGIxZDNlZWZjZTY1YWM2YTRlMWZmN2E3MTJkZiZjdD1z/3ohhwutQL0CDTq3kKA/giphy.gif"
           />
+        </div>
+        <div className="layer" data-depth="0.35">
+          <img className="cloud cloud-4" src={`${cloud}`} />
         </div>
         <div className="layer" data-depth="0.4">
           <a className="map-container" href="https://goo.gl/maps/2MqEVKvGFkBZfKii7" target="_blank">
