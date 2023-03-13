@@ -26,7 +26,6 @@ export default () => {
     (DeviceMotionEvent as any).requestPermission().then((response: any) => {
       if (response == 'granted') {
         setHasPermission(true);
-        console.log('accelerometer permission granted');
         initParallax();
       }
     });
@@ -89,7 +88,11 @@ export default () => {
           <img className="cloud cloud-4" src={`${cloud}`} />
         </div>
         <div className="layer" data-depth="0.4">
-          <a className="map-container" href="https://goo.gl/maps/2MqEVKvGFkBZfKii7" target="_blank">
+          <a
+            className="map-container"
+            href="https://goo.gl/maps/2MqEVKvGFkBZfKii7"
+            target="_blank"
+          >
             <Map className="map" />
           </a>
         </div>
