@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-
+import throttle from 'lodash/throttle';
 import Parallax from 'parallax-js';
 
 import './App.css';
@@ -9,11 +9,21 @@ import clouds from './images/clouds.jpg';
 import cloud from './images/cloud-transparent.png';
 import Map from './Map';
 
+const SHINE = {
+  maxX: 30,
+  minY: 20,
+  maxY: 60,
+};
+
 export default () => {
   const [isMobile, setIsMobile] = useState(true);
   const [hasPermission, setHasPermission] = useState(false);
   const [didLoad, setDidLoad] = useState(false);
   const [didSkip, setDidSkip] = useState(false);
+  const [fb, setFb] = useState(0);
+  const [lr, setLr] = useState(0);
+  const [perc, setPerc] = useState('');
+  const containerRef = React.useRef(null);
 
   const initParallax = () => {
     const containerEl = document.getElementsByClassName('container')[0];
@@ -27,9 +37,40 @@ export default () => {
       if (response == 'granted') {
         setHasPermission(true);
         initParallax();
+
+        window.addEventListener(
+          'deviceorientation',
+          throttle((event) => {
+            setFb(event.beta);
+            setLr(event.gamma);
+          }, 100)
+        );
       }
     });
   };
+
+  useEffect(() => {
+    const isLeft = lr > 0;
+    const bothSidesDec = Math.min(Math.abs(lr) / SHINE.maxX, 1);
+    const decFromLeft = isLeft
+      ? 0.5 - bothSidesDec / 2
+      : 0.5 + bothSidesDec / 2;
+    const percentFromLeft = decFromLeft * 100;
+
+    const dist = SHINE.maxY - SHINE.minY;
+    const distFromMin = Math.min(Math.max(fb - SHINE.minY, 0), dist);
+    const distFromTop = dist - distFromMin;
+    const percentFromTop = (distFromTop / dist) * 100;
+
+    containerRef.current.style.setProperty(
+      '--percentFromLeft',
+      `${percentFromLeft}%`
+    );
+    containerRef.current.style.setProperty(
+      '--percentFromTop',
+      `${percentFromTop}%`
+    );
+  }, [lr, containerRef]);
 
   useEffect(() => {
     const isiPhone = !!navigator.userAgent.match(/iphone/i);
@@ -64,7 +105,12 @@ export default () => {
           )}
         </div>
       )}
-      <div className="container">
+      <div className="tilt-data">
+        <p>{fb}</p>
+        <p>{lr}</p>
+        <p>{perc}</p>
+      </div>
+      <div className="container" ref={containerRef}>
         <div className="layer" data-depth="0.1">
           <img className="background" src={`${clouds}`} />
         </div>
