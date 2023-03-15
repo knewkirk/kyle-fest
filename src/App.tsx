@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import throttle from 'lodash/throttle';
 import Parallax from 'parallax-js';
 
-import './App.css';
+import './App.less';
 
 import clouds from './images/clouds.jpg';
 import cloud from './images/cloud-transparent.png';

@@ -11,8 +11,8 @@ module.exports = {
         type: 'asset/resource',
         generator: {
           publicPath: '/images/',
-          outputPath: '../public/images/'
-        }
+          outputPath: '../public/images/',
+        },
       },
       {
         test: /\.svg/,
@@ -32,6 +32,14 @@ module.exports = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.less$/i,
+        use: [
+          'style-loader',
+          'css-loader',
+          'less-loader',
+        ],
       },
     ],
   },
