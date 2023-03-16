@@ -1,0 +1,64 @@
+.text {
+  --gradientOneLine: linear-gradient(
+    to bottom,
+    #634f2c 0%,
+    #cfc09f 15%,
+    #edd090 30%,
+    #e0bd56 50%,
+    #84621f 85%
+  );
+  --gradientTwoLines: repeating-linear-gradient(
+    to bottom,
+    #634f2c 0%,
+    #cfc09f 7%,
+    #edd090 15%,
+    #e0bd56 25%,
+    #84621f 45%
+  );
+  --gradientThreeLines: repeating-linear-gradient(
+    to bottom,
+    #634f2c 0%,
+    #cfc09f 5%,
+    #edd090 10%,
+    #e0bd56 18%,
+    #84621f 32%
+  );
+  --gradientShine: radial-gradient(
+    farthest-corner at var(--percentFromLeft) var(--percentFromTop),
+    #fdec96,
+    transparent 30%
+  );
+
+  margin: 0;
+  line-height: 1em;
+  color: transparent;
+  position: absolute;
+}
+
+.text::after {
+  background: none;
+  content: attr(data-text);
+  left: 0;
+  top: 0;
+  right: 0;
+  z-index: -1;
+  position: absolute;
+  text-shadow: -1px -1px 1px #3d290c, 1px 1px 1px #c6bb9f,
+    0 0 20px rgba(30, 35, 40, 0.8), 0 0 50px rgba(30, 35, 40, 0.5);
+}
+
+.gradientStyles(@numLines, @shouldShine) {
+  background: if(@shouldShine, var(--gradientShine), none),
+    if(
+      @numLines = 1,
+      var(--gradientOneLine),
+      if(
+        @numLines = 2,
+        var(--gradientTwoLines),
+        if(@numLines = 3, var(--gradientThreeLines, gold))
+      )
+    );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

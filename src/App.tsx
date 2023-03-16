@@ -5,9 +5,12 @@ import Parallax from 'parallax-js';
 
 import './App.less';
 
-import clouds from './images/clouds.jpg';
-import cloud from './images/cloud-transparent.png';
-import Map from './Map';
+import clouds from '@images/clouds.jpg';
+import Cloud from '@components/Cloud';
+import Map from '@components/Map';
+import Permissions from '@components/Permissions';
+import Text from '@components/Text';
+import TiltDebug from '@components/TiltDebug';
 
 const SHINE = {
   maxX: 30,
@@ -20,10 +23,10 @@ export default () => {
   const [hasPermission, setHasPermission] = useState(false);
   const [didLoad, setDidLoad] = useState(false);
   const [didSkip, setDidSkip] = useState(false);
-  const [fb, setFb] = useState(0);
-  const [lr, setLr] = useState(0);
-  const [perc, setPerc] = useState('');
+  const [frontBack, setFrontBack] = useState(0);
+  const [leftRight, setLeftRight] = useState(0);
   const containerRef = React.useRef(null);
+  const debug = false;
 
   const initParallax = () => {
     const containerEl = document.getElementsByClassName('container')[0];
@@ -41,8 +44,8 @@ export default () => {
         window.addEventListener(
           'deviceorientation',
           throttle((event) => {
-            setFb(event.beta);
-            setLr(event.gamma);
+            setFrontBack(event.beta);
+            setLeftRight(event.gamma);
           }, 100)
         );
       }
@@ -50,15 +53,15 @@ export default () => {
   };
 
   useEffect(() => {
-    const isLeft = lr > 0;
-    const bothSidesDec = Math.min(Math.abs(lr) / SHINE.maxX, 1);
+    const isLeft = leftRight > 0;
+    const bothSidesDec = Math.min(Math.abs(leftRight) / SHINE.maxX, 1);
     const decFromLeft = isLeft
       ? 0.5 - bothSidesDec / 2
       : 0.5 + bothSidesDec / 2;
     const percentFromLeft = decFromLeft * 100;
 
     const dist = SHINE.maxY - SHINE.minY;
-    const distFromMin = Math.min(Math.max(fb - SHINE.minY, 0), dist);
+    const distFromMin = Math.min(Math.max(frontBack - SHINE.minY, 0), dist);
     const distFromTop = dist - distFromMin;
     const percentFromTop = (distFromTop / dist) * 100;
 
@@ -70,7 +73,7 @@ export default () => {
       '--percentFromTop',
       `${percentFromTop}%`
     );
-  }, [lr, containerRef]);
+  }, [frontBack, leftRight, containerRef]);
 
   useEffect(() => {
     const isiPhone = !!navigator.userAgent.match(/iphone/i);
@@ -92,37 +95,25 @@ export default () => {
   return (
     <>
       {isMobile && !hasPermission && !didSkip && (
-        <div className="permission-scrim">
-          {!hasPermission && (
-            <div className="btn-wrapper">
-              <button className="permission-btn" onClick={requestPerms}>
-                I'M READY
-              </button>
-              <button className="skip-btn" onClick={() => setDidSkip(true)}>
-                skip
-              </button>
-            </div>
-          )}
-        </div>
+        <Permissions
+          onClickReady={requestPerms}
+          onClickSkip={() => setDidSkip(true)}
+        />
       )}
-      <div className="tilt-data">
-        <p>{fb}</p>
-        <p>{lr}</p>
-        <p>{perc}</p>
-      </div>
+      {debug && <TiltDebug frontBack={frontBack} leftRight={leftRight} />}
       <div className="container" ref={containerRef}>
         <div className="layer" data-depth="0.1">
           <img className="background" src={`${clouds}`} />
         </div>
         <div className="layer" data-depth="0.15">
-          <img className="cloud cloud-0" src={`${cloud}`} />
+          <Cloud depth={0} />
         </div>
         <div className="layer" data-depth="0.2">
-          <img className="cloud cloud-1" src={`${cloud}`} />
-          <img className="cloud cloud-2" src={`${cloud}`} />
+          <Cloud depth={1} />
+          <Cloud depth={2} />
         </div>
         <div className="layer" data-depth="0.25">
-          <img className="cloud cloud-3" src={`${cloud}`} />
+          <Cloud depth={3} />
         </div>
         <div className="layer" data-depth="0.3">
           <img
@@ -131,7 +122,7 @@ export default () => {
           />
         </div>
         <div className="layer" data-depth="0.35">
-          <img className="cloud cloud-4" src={`${cloud}`} />
+          <Cloud depth={4} />
         </div>
         <div className="layer" data-depth="0.4">
           <a
@@ -139,32 +130,24 @@ export default () => {
             href="https://goo.gl/maps/2MqEVKvGFkBZfKii7"
             target="_blank"
           >
-            <Map className="map" />
+            <Map />
           </a>
         </div>
         <div className="layer" data-depth="0.45">
           <div className="star-container">
-            <p className="text star" data-text="★">
-              ★
-            </p>
+            <Text className="star" value="★"/>
           </div>
         </div>
         <div className="layer" data-depth="0.9">
-          <p className="text subheadline" data-text="APRIL 8 &middot; 2PM">
-            APRIL 8 &middot; 2PM
-          </p>
+          <Text className="subheadline" value="APRIL 8 &middot; 2PM"/>
         </div>
         <div className="layer" data-depth="1">
-          <p className="text headline" data-text="KYLE FEST 2023">
-            KYLE FEST 2023
-          </p>
+          <Text className="headline" value="KYLE FEST 2023"/>
           <a
             href="https://www.southernpacificbrewing.com/"
-            className="text location"
-            data-text="SOUTHERN PACIFIC BREWING"
             target="_blank"
           >
-            SOUTHERN PACIFIC BREWING
+            <Text className="location" value="SOUTHERN PACIFIC BREWING"/>
           </a>
         </div>
       </div>

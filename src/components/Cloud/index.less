@@ -1,0 +1,59 @@
+@import '@variables.less';
+
+.cloud {
+  --filter: drop-shadow(0 0 50px rgba(30, 35, 40, 0.5)) sepia(0.4)
+    hue-rotate(170deg) brightness(0.85);
+  position: absolute;
+
+  &&-0 {
+    filter: blur(3px) var(--filter);
+    width: 70%;
+    max-width: 680px;
+    top: 0;
+    left: 20%;
+    aspect-ratio: 9/2;
+  }
+
+  &&-1 {
+    filter: blur(2px) var(--filter);
+    width: 45%;
+    max-width: 380px;
+    top: 2%;
+    left: -8%;
+  }
+
+  &&-2 {
+    filter: blur(2px) var(--filter);
+    width: 30%;
+    max-width: 250px;
+    top: 2%;
+    right: 0;
+    aspect-ratio: 9/7;
+
+    @media (min-width: @PHONE-WIDTH) {
+      top: -5%;
+    }
+  }
+
+  &&-3 {
+    filter: blur(1px) var(--filter);
+    width: 60%;
+    max-width: 480px;
+    top: 3%;
+    right: 10%;
+    aspect-ratio: 9/2;
+  }
+
+  &&-4 {
+    filter: blur(0.5px) var(--filter);
+    width: 70%;
+    max-width: 600px;
+    top: 1%;
+    left: 3%;
+    aspect-ratio: 9/4;
+
+    @media (min-width: @PHONE-WIDTH) {
+      top: -8%;
+    }
+  }
+}
