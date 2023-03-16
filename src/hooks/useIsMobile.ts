@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 export default () => {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
     const isiPhone = !!navigator.userAgent.match(/iphone/i);
