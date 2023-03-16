@@ -1,14 +1,13 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import throttle from 'lodash/throttle';
-import Parallax from 'parallax-js';
 
 import clouds from '@images/clouds.jpg';
 import Cloud from '@components/Cloud';
 import Map from '@components/Map';
 import Text from '@components/Text';
-
 import calcShinePosition from '@helpers/calcShinePosition';
+import useParallax from '@hooks/useParallax';
 
 const SHINE = {
   maxX: 30,
@@ -25,13 +24,8 @@ export default ({ hasPermission, isMobile }: Props) => {
   const [frontBack, setFrontBack] = useState(0);
   const [leftRight, setLeftRight] = useState(0);
   const [didInit, setDidInit] = useState(false);
-  const containerRef = React.useRef(null);
-
-  const initParallax = React.useCallback(() => {
-    new Parallax(containerRef.current as HTMLElement, {
-      relativeInput: true,
-    });
-  }, [containerRef]);
+  const containerRef = useRef(null);
+  const initParallax = useParallax(containerRef.current);
 
   useEffect(() => {
     if (hasPermission && !didInit) {
