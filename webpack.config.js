@@ -45,8 +45,8 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['*', '.js', '.jsx', '.tsx'],
-    plugins: [new TsconfigPathsPlugin({/* options: see below */})]
+    extensions: ['*', '.js', '.jsx', '.ts', '.tsx'],
+    plugins: [new TsconfigPathsPlugin({})]
   },
   output: {
     path: path.resolve(__dirname, 'public/'),
