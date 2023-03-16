@@ -9,6 +9,8 @@ import Text from '@components/Text';
 import calcShinePosition from '@helpers/calcShinePosition';
 import useParallax from '@hooks/useParallax';
 
+import './index.less';
+
 const SHINE = {
   maxX: 30,
   minY: 20,
