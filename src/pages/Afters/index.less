@@ -3,6 +3,7 @@
 @orange: #ff6c11;
 @yellow: #f9c80e;
 @blue: #023788;
+@purple: #650d89;
 @dark-purple: #241734;
 
 .neon-container {
@@ -28,7 +29,7 @@
     left: -5%;
     top: -5%;
     object-fit: cover;
-    filter: brightness(0.8);
+    filter: brightness(0.6);
   }
 
   p {
@@ -46,7 +47,7 @@
 
   .afters {
     --neon-color: @teal;
-    font-size: 128px;
+    font-size: 84px;
     position: absolute;
     width: 100%;
     top: 5%;
@@ -56,21 +57,21 @@
     font-size: 60px;
     position: absolute;
     width: 100%;
-    top: 28%;
+    top: 25%;
+    line-height: 1em;
   }
   .featuring {
     --neon-color: @orange;
     font-size: 48px;
     position: absolute;
     width: 100%;
-    top: 42%;
+    top: 46%;
   }
 
   .lineup {
-    // color: black;
     position: absolute;
-    width: 85%;
-    top: 50%;
+    width: 90%;
+    top: 58%;
     left: 0;
     right: 0;
     margin: auto;
@@ -79,16 +80,12 @@
     justify-content: center;
 
     span {
-      --neon-color: lighten(@orange, 20%);
-      color: @dark-purple;
-      font-size: 28px;
+      --neon-color: @orange;
+      color: #fff;
+      font-size: 24px;
       margin: 0 8px;
-      -webkit-text-stroke-color: var(--neon-color);
-      -webkit-text-stroke-width: 2px;
-      text-shadow: 0 0 4px #fff, 0 0 11px #fff, 0 0 19px #fff,
-      0 0 40px var(--neon-color), 0 0 80px var(--neon-color),
-      0 0 90px var(--neon-color), 0 0 100px var(--neon-color),
-      0 0 150px var(--neon-color);
+      text-shadow: 0 0 10px #fff8, 0 0 19px var(--neon-color),
+        0 0 40px var(--neon-color), 0 0 80px var(--neon-color);
     }
   }
 }

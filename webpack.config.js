@@ -8,7 +8,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(png|jpg)/,
+        test: /\.(gif|png|jpg)/,
         type: 'asset/resource',
         generator: {
           publicPath: '/images/',

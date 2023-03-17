@@ -2,8 +2,6 @@ import Parallax from 'parallax-js';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 
-import outrun from '@images/outrun.jpg';
-
 import './index.less';
 
 const LINEUP = [
@@ -14,7 +12,7 @@ const LINEUP = [
   'BEEEECH',
   'JULEZ',
   'The Newkirk Brothers',
-  'MAXXX'
+  'MAXXX',
 ];
 
 export default () => {
@@ -35,21 +33,23 @@ export default () => {
   return (
     <div className="neon-container" ref={containerRef}>
       <div className="layer" data-depth="0.1">
-        <img className="background" src={`${outrun}`} />
+        <img className="background" src={`/images/outrun-animated.gif`} />
       </div>
-      <div className="layer" data-depth="0.8">
-        <p className="featuring neon-text">Featuring:</p>
+      <div className="layer" data-depth="0.7">
         <div className="lineup">
           {lineup.map((name) => (
             <span>{name}</span>
           ))}
         </div>
       </div>
+      <div className="layer" data-depth="0.8">
+        <p className="featuring neon-text">Featuring:</p>
+      </div>
       <div className="layer" data-depth="0.9">
-        <p className="apt neon-text">1963 McAllister #5</p>
+        <p className="apt neon-text">1963 McAllister<br/>#5</p>
       </div>
       <div className="layer" data-depth="1">
-        <p className="afters neon-text">Afters</p>
+        <p className="afters neon-text">After Dark</p>
       </div>
     </div>
   );

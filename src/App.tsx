@@ -46,7 +46,7 @@ export default () => {
           path="/"
           element={<Rainy hasPermission={hasPermission} isMobile={isMobile} />}
         />
-        <Route path="afters" element={<Afters />} />
+        <Route path="after-dark" element={<Afters />} />
       </Routes>
     </Router>
   );

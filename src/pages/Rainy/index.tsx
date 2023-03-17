@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import throttle from 'lodash/throttle';
 import Parallax from 'parallax-js';
 
@@ -70,6 +71,9 @@ export default ({ hasPermission, isMobile }: Props) => {
     <div className="gold-container" ref={containerRef}>
       <div className="layer" data-depth="0.1">
         <img className="background" src={`${clouds}`} />
+      </div>
+      <div className="layer" data-depth="0.12">
+        <Link className="moon" to="/after-dark">🌙</Link>
       </div>
       <div className="layer" data-depth="0.15">
         <Cloud depth={0} />
