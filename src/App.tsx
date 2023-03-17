@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import './App.less';
 
 import Permissions from '@components/Permissions';
 import useIsMobile from '@hooks/useIsMobile';
 import Rainy from '@pages/Rainy';
+import Afters from '@pages/Afters';
 
 export default () => {
   const isMobile = useIsMobile();
@@ -32,14 +34,20 @@ export default () => {
   }, []);
 
   return (
-    <>
+    <Router>
       {isMobile && !hasPermission && !didSkip && (
         <Permissions
           onClickReady={requestPerms}
           onClickSkip={() => setDidSkip(true)}
         />
       )}
-      <Rainy hasPermission={ hasPermission } isMobile={ isMobile }/>
-    </>
+      <Routes>
+        <Route
+          path="/"
+          element={<Rainy hasPermission={hasPermission} isMobile={isMobile} />}
+        />
+        <Route path="afters" element={<Afters />} />
+      </Routes>
+    </Router>
   );
 };

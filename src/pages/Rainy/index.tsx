@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import throttle from 'lodash/throttle';
+import Parallax from 'parallax-js';
 
 import clouds from '@images/clouds.jpg';
 import Cloud from '@components/Cloud';
 import Map from '@components/Map';
-import Text from '@components/Text';
+import GoldText from '@components/GoldText';
 import calcShinePosition from '@helpers/calcShinePosition';
-import useParallax from '@hooks/useParallax';
 
 import './index.less';
 
@@ -27,11 +27,12 @@ export default ({ hasPermission, isMobile }: Props) => {
   const [leftRight, setLeftRight] = useState(0);
   const [didInit, setDidInit] = useState(false);
   const containerRef = useRef(null);
-  const initParallax = useParallax(containerRef.current);
 
   useEffect(() => {
-    if (hasPermission && !didInit) {
-      initParallax();
+    if (hasPermission && !didInit && containerRef.current) {
+      new Parallax(containerRef.current, {
+        relativeInput: true,
+      });
       setDidInit(true);
 
       if (isMobile) {
@@ -66,7 +67,7 @@ export default ({ hasPermission, isMobile }: Props) => {
   }, [frontBack, leftRight, containerRef]);
 
   return (
-    <div className="container" ref={containerRef}>
+    <div className="gold-container" ref={containerRef}>
       <div className="layer" data-depth="0.1">
         <img className="background" src={`${clouds}`} />
       </div>
@@ -100,16 +101,16 @@ export default ({ hasPermission, isMobile }: Props) => {
       </div>
       <div className="layer" data-depth="0.45">
         <div className="star-container">
-          <Text className="star" value="★" />
+          <GoldText className="star" value="★" />
         </div>
       </div>
       <div className="layer" data-depth="0.9">
-        <Text className="subheadline" value="APRIL 8 &middot; 2PM" />
+        <GoldText className="subheadline" value="APRIL 8 &middot; 2PM" />
       </div>
       <div className="layer" data-depth="1">
-        <Text className="headline" value="KYLE FEST 2023" />
+        <GoldText className="headline" value="KYLE FEST 2023" />
         <a href="https://www.southernpacificbrewing.com/" target="_blank">
-          <Text className="location" value="SOUTHERN PACIFIC BREWING" />
+          <GoldText className="location" value="SOUTHERN PACIFIC BREWING" />
         </a>
       </div>
     </div>
