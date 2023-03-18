@@ -46,7 +46,7 @@ export default () => {
         <p className="featuring neon-text">Featuring:</p>
       </div>
       <div className="layer" data-depth="0.9">
-        <p className="apt neon-text">1963 McAllister<br/>#5</p>
+        <p className="apt neon-text">1963 McAllister #5</p>
       </div>
       <div className="layer" data-depth="1">
         <p className="afters neon-text">After Dark</p>
