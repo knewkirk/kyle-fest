@@ -1,14 +1,12 @@
 import * as React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import throttle from 'lodash/throttle';
 import Parallax from 'parallax-js';
 
 import clouds from '@images/clouds.jpg';
 import Cloud from '@components/Cloud';
 import Map from '@components/Map';
 import GoldText from '@components/GoldText';
-import calcShinePosition from '@helpers/calcShinePosition';
 
 import './index.less';
 
@@ -24,8 +22,6 @@ interface Props {
 }
 
 export default ({ hasPermission, isMobile }: Props) => {
-  const [frontBack, setFrontBack] = useState(0);
-  const [leftRight, setLeftRight] = useState(0);
   const [didInit, setDidInit] = useState(false);
   const containerRef = useRef(null);
 
@@ -35,37 +31,8 @@ export default ({ hasPermission, isMobile }: Props) => {
         relativeInput: true,
       });
       setDidInit(true);
-
-      if (isMobile) {
-        // TODO: laggy - animating background uses cpu/not gpu
-        window.addEventListener(
-          'deviceorientation',
-          throttle((event: DeviceOrientationEvent) => {
-            setFrontBack(event.beta);
-            setLeftRight(event.gamma);
-          }, 130)
-        );
-      }
     }
   }, [hasPermission, didInit, isMobile]);
-
-  useEffect(() => {
-    const { percentFromLeft, percentFromTop } = calcShinePosition({
-      leftRight,
-      frontBack,
-      limitX: SHINE.maxX,
-      minY: SHINE.minY,
-      maxY: SHINE.maxY,
-    });
-    containerRef.current.style.setProperty(
-      '--percentFromLeft',
-      `${percentFromLeft}%`
-    );
-    containerRef.current.style.setProperty(
-      '--percentFromTop',
-      `${percentFromTop}%`
-    );
-  }, [frontBack, leftRight, containerRef]);
 
   return (
     <div className="gold-container" ref={containerRef}>

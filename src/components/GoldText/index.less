@@ -23,11 +23,6 @@
     #e0bd56 18%,
     #84621f 32%
   );
-  --gradientShine: radial-gradient(
-    farthest-corner at var(--percentFromLeft) var(--percentFromTop),
-    #fdec96,
-    transparent 30%
-  );
 
   margin: 0;
   line-height: 1em;
@@ -47,8 +42,8 @@
     0 0 20px rgba(30, 35, 40, 0.8), 0 0 50px rgba(30, 35, 40, 0.5);
 }
 
-.gradientStyles(@numLines, @shouldShine) {
-  background: if(@shouldShine, var(--gradientShine), none),
+.gradientStyles(@numLines) {
+  background:
     if(
       @numLines = 1,
       var(--gradientOneLine),
