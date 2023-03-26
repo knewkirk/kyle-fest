@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import './index.less';
 
+import outrun from '@images/outrun-animated.gif';
+
 const LINEUP = [
   'MITSUØ',
   'MixMaster K',
@@ -33,7 +35,7 @@ export default () => {
   return (
     <div className="neon-container" ref={containerRef}>
       <div className="layer" data-depth="0.1">
-        <img className="background" src={`/images/outrun-animated.gif`} />
+        <img className="background" src={ outrun } />
       </div>
       <div className="layer" data-depth="0.7">
         <div className="lineup">

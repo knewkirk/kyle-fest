@@ -1,9 +1,12 @@
 const path = require('path');
 const webpack = require('webpack');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.js',
+  cache: false,
+  entry: path.resolve(__dirname, 'src/index.js'),
   mode: 'development',
   module: {
     rules: [
@@ -36,21 +39,26 @@ module.exports = {
       },
       {
         test: /\.less$/i,
-        use: [
-          'style-loader',
-          'css-loader',
-          'less-loader',
-        ],
+        use: ['style-loader', 'css-loader', 'less-loader'],
       },
     ],
   },
   resolve: {
     extensions: ['*', '.js', '.jsx', '.ts', '.tsx'],
-    plugins: [new TsconfigPathsPlugin({})]
+    plugins: [new TsconfigPathsPlugin({})],
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+    }),
+    new CopyPlugin({
+      patterns: [{ from: 'static', to: '' }],
+    }),
+  ],
   output: {
     path: path.resolve(__dirname, 'public/'),
-    publicPath: '/public/',
-    filename: 'bundle.js',
+    publicPath: '/',
+    filename: '[name].[contenthash].js',
+    clean: true,
   },
 };

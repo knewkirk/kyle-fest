@@ -5,16 +5,11 @@ import Parallax from 'parallax-js';
 
 import clouds from '@images/clouds.jpg';
 import Cloud from '@components/Cloud';
-import Map from '@components/Map';
 import GoldText from '@components/GoldText';
 
 import './index.less';
 
-const SHINE = {
-  maxX: 30,
-  minY: 20,
-  maxY: 60,
-};
+import map from '@images/map-colorized.png';
 
 interface Props {
   hasPermission: boolean;
@@ -40,7 +35,7 @@ export default ({ hasPermission, isMobile }: Props) => {
         <img className="background" src={`${clouds}`} />
       </div>
       <div className="layer" data-depth="0.12">
-        <Link className="moon" to="/after-dark">🌙</Link>
+        <Link className="moon" to="/old/after-dark">🌙</Link>
       </div>
       <div className="layer" data-depth="0.15">
         <Cloud depth={0} />
@@ -67,7 +62,7 @@ export default ({ hasPermission, isMobile }: Props) => {
           href="https://goo.gl/maps/2MqEVKvGFkBZfKii7"
           target="_blank"
         >
-          <Map />
+          <img src={ map } />
         </a>
       </div>
       <div className="layer" data-depth="0.45">
