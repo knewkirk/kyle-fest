@@ -5,17 +5,17 @@ import {
   BrowserRouter as Router,
   Routes,
   Outlet,
-  Link,
 } from 'react-router-dom';
-import loadable from '@loadable/component';
+import { ErrorBoundary } from 'react-error-boundary';
 
 import './App.less';
 
 import Permissions from '@components/Permissions';
 import useIsMobile from '@hooks/useIsMobile';
 
-const Rainy = loadable(() => import('@pages/Rainy'));
-const Afters = loadable(() => import('@pages/Afters'));
+import Rainy from '@pages/Rainy';
+import Afters from '@pages/Afters';
+import SF from '@pages/SF';
 
 export default () => {
   const isMobile = useIsMobile();
@@ -42,7 +42,7 @@ export default () => {
   }, []);
 
   const OldFrame = () => (
-    <>
+    <div>
       {isMobile && !hasPermission && !didSkip && (
         <Permissions
           onClickReady={requestPerms}
@@ -50,14 +50,17 @@ export default () => {
         />
       )}
       <Outlet />
-    </>
+    </div>
   );
 
+  const Fallback = (props: any) => <pre>{JSON.stringify(props)}</pre>;
+
   return (
-    <Router>
+    <ErrorBoundary fallback={<Fallback />}>
+      <Router>
         <Routes>
-          <Route path="/" element={<div>ROOT<Link to="/old">LINK</Link></div>} />
-          <Route path="/old/*" element={<OldFrame />}>
+          <Route index element={<SF />} />
+          <Route path="/old" element={<OldFrame />}>
             <Route
               index
               element={
@@ -67,6 +70,7 @@ export default () => {
             <Route path="after-dark" element={<Afters />} />
           </Route>
         </Routes>
-    </Router>
+      </Router>
+    </ErrorBoundary>
   );
 };
