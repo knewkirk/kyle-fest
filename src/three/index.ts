@@ -32,6 +32,9 @@ const SIGN_2 = {
   FONT: 16,
 };
 
+const SF_LOADERS_COUNT = 2; // font, star, bg, but idk less
+const TOKYO_LOADERS_COUNT = 2; // jpn & cursive fonts, mic svg, bg, but idk why less
+
 export default class ThreeSF {
   isTokyo: boolean;
   camera: THREE.Camera;
@@ -40,7 +43,11 @@ export default class ThreeSF {
   container: HTMLElement;
   font: any;
   goldMaterial: THREE.Material;
+  glossMaterial: THREE.Material;
+  glowMaterial: THREE.Material;
   gui: GUI;
+  sfLoadingManager: THREE.LoadingManager;
+  tokyoLoadingManager: THREE.LoadingManager;
   lutPass: LUTPass;
   onComplete: () => void;
   orbitControls: OrbitControls;
@@ -53,6 +60,13 @@ export default class ThreeSF {
   bloomLayer: THREE.Layers;
   didInit = false;
 
+  sfLoadingCount = 0;
+  sfTextRendered = false;
+  tokyoLoadingCount = 0;
+  tokyoText1Rendered = false;
+  tokyoText2Rendered = false;
+  tokyoSVGRendered = false;
+
   constructor(
     isTokyo: boolean,
     container: HTMLElement,
@@ -63,7 +77,32 @@ export default class ThreeSF {
     this.onComplete = onComplete;
   }
 
+  checkSFLoaded = () => {
+    if (this.sfLoadingCount >= SF_LOADERS_COUNT && this.sfTextRendered) {
+      this.onComplete();
+    }
+  };
+  checkTokyoLoaded = () => {
+    if (
+      this.tokyoLoadingCount >= TOKYO_LOADERS_COUNT &&
+      this.tokyoText1Rendered &&
+      this.tokyoText2Rendered &&
+      this.tokyoSVGRendered
+    ) {
+      this.onComplete();
+    }
+  };
+
   initEnv = async () => {
+    this.sfLoadingManager = new THREE.LoadingManager(() => {
+      this.sfLoadingCount++;
+      this.checkSFLoaded();
+    });
+    this.tokyoLoadingManager = new THREE.LoadingManager(() => {
+      this.tokyoLoadingCount++;
+      this.checkTokyoLoaded();
+    });
+
     this.gui = new GUI();
     this.gui.hide();
 
@@ -84,11 +123,15 @@ export default class ThreeSF {
     );
 
     if (this.isTokyo) {
-      this.camera.position.set(0, -100, 380);
+      this.camera.position.x = 100;
+      this.camera.position.y = -100;
+      this.camera.position.z = 380;
       this.bloomLayer = new THREE.Layers();
       this.bloomLayer.set(1);
     } else {
-      this.camera.position.set(0, -10, 380);
+      this.camera.position.x = 100;
+      this.camera.position.y = -10;
+      this.camera.position.z = 380;
     }
     this.camera.lookAt(0, 0, 0);
 
@@ -108,28 +151,27 @@ export default class ThreeSF {
     this.addOrbitControls();
   };
 
+  cleanup = () => {
+    this.gui.destroy();
+    delete this.gui;
+  };
+
   addOrbitControls = () => {
     this.orbitControls = new OrbitControls(
       this.camera,
       this.renderer.domElement
     );
     this.orbitControls.autoRotate = true;
-    this.orbitControls.autoRotateSpeed = 1.3;
+    this.orbitControls.autoRotateSpeed = 0.5;
     this.gui.add(this.orbitControls, 'autoRotate');
+    this.gui.add(this.orbitControls, 'autoRotateSpeed', 0, 1, 0.1);
   };
 
-  loadFont = async () => {
-    const fontLoader = new FontLoader();
-    return new Promise((res, rej) => {
-      fontLoader
-        .loadAsync('/three/fonts/Bowlby-One-SC_Regular.json')
-        .then((font: any) => {
-          res(font);
-        });
-    });
-  };
-
-  createTextGeo = (text: string, size: number, posY: number): TextGeometry => {
+  createSFTextGeo = (
+    text: string,
+    size: number,
+    posY: number
+  ): TextGeometry => {
     const textGeo = new TextGeometry(text, {
       font: this.font,
       size,
@@ -148,24 +190,30 @@ export default class ThreeSF {
   };
 
   createTextMesh = async () => {
-    this.font = await this.loadFont();
+    const fontLoader = new FontLoader(this.sfLoadingManager);
+    this.font = await fontLoader.loadAsync(
+      '/three/fonts/Bowlby-One-SC_Regular.json'
+    );
 
     const geometries = [];
-    geometries.push(this.createTextGeo('KYLE FEST', 16, 70));
-    geometries.push(this.createTextGeo('2023', 16, 45));
-    geometries.push(this.createTextGeo('APRIL 8 · 2PM', 12, 17));
-    geometries.push(this.createTextGeo('SOUTHERN', 12, -12));
-    geometries.push(this.createTextGeo('PACIFIC', 12, -30));
-    geometries.push(this.createTextGeo('BREWERY', 12, -48));
+    geometries.push(this.createSFTextGeo('KYLE FEST', 16, 70));
+    geometries.push(this.createSFTextGeo('2023', 16, 45));
+    geometries.push(this.createSFTextGeo('APRIL 8 · 2PM', 12, 17));
+    geometries.push(this.createSFTextGeo('SOUTHERN', 12, -12));
+    geometries.push(this.createSFTextGeo('PACIFIC', 12, -30));
+    geometries.push(this.createSFTextGeo('BREWERY', 12, -48));
 
     const merged = mergeBufferGeometries(geometries);
     const textMesh = new THREE.Mesh(merged, this.goldMaterial);
-
+    textMesh.onAfterRender = () => {
+      this.sfTextRendered = true;
+      this.checkSFLoaded();
+    };
     this.scene.add(textMesh);
   };
 
   createStarMesh = async () => {
-    const loader = new OBJLoader();
+    const loader = new OBJLoader(this.sfLoadingManager);
     this.starObj = await loader.loadAsync('/three/estrellica.obj');
     this.starObj.traverse((child: any) => {
       if (child instanceof THREE.Mesh) {
@@ -173,22 +221,16 @@ export default class ThreeSF {
       }
     });
     this.starObj.scale.set(30, 30, 30);
-
     this.starObj.position.x = 6500;
     this.starObj.position.y = -500;
     this.starObj.position.z = -7000;
-
-    this.gui.add(this.starObj.position, 'x', -10000, 10000);
-    this.gui.add(this.starObj.position, 'y', -5000, 5000);
-    this.gui.add(this.starObj.position, 'z', -10000, 10000);
-
     this.starObj.rotateX(Math.PI / 2);
 
     this.scene.add(this.starObj);
   };
 
   createKaraokeText = async () => {
-    const loader = new FontLoader();
+    const loader = new FontLoader(this.tokyoLoadingManager);
     const font = await loader.loadAsync(
       'three/fonts/Rounded Mplus 1c Medium_Regular.json'
     );
@@ -197,12 +239,6 @@ export default class ThreeSF {
       font,
       size: SIGN_1.FONT,
       height: 2,
-      curveSegments: 1,
-      bevelEnabled: false,
-      bevelSize: 2,
-      bevelThickness: 3,
-      bevelOffset: 0,
-      bevelSegments: 5,
     });
     textGeo.computeBoundingBox();
     textGeo.center();
@@ -212,30 +248,33 @@ export default class ThreeSF {
       SIGN_1.DEPTH / 2 + 2
     );
 
-    const material = new THREE.MeshBasicMaterial({
-      color: 0xff57c4,
-    });
-    const textMesh = new THREE.Mesh(textGeo, material);
+    const textMesh = new THREE.Mesh(textGeo, this.glowMaterial);
+    textMesh.onAfterRender = () => {
+      this.tokyoText1Rendered = true;
+      this.checkTokyoLoaded();
+    };
+
     this.scene.add(textMesh);
     textMesh.layers.enable(1);
   };
 
   createMicrophone = async () => {
     const svgGroup = new THREE.Group();
-    const material = new THREE.MeshBasicMaterial({
-      color: 0xff57c4,
-    });
-    const loader = new SVGLoader();
+    const loader = new SVGLoader(this.tokyoLoadingManager);
     const svg = await loader.loadAsync('/three/microphone.svg');
 
     svg.paths.forEach((path, i) => {
       const shapes = path.toShapes(false);
       shapes.forEach((shape, j) => {
         const geometry = new THREE.ExtrudeGeometry(shape, {
-          depth: 30,
+          depth: 50,
           bevelEnabled: false,
         });
-        const mesh = new THREE.Mesh(geometry, material);
+        const mesh = new THREE.Mesh(geometry, this.glowMaterial);
+        mesh.onAfterRender = () => {
+          this.tokyoSVGRendered = true;
+          this.checkTokyoLoaded();
+        };
         svgGroup.add(mesh);
       });
     });
@@ -257,28 +296,23 @@ export default class ThreeSF {
   };
 
   createPandoraText = async () => {
-    const loader = new FontLoader();
+    const loader = new FontLoader(this.tokyoLoadingManager);
     const font = await loader.loadAsync('three/fonts/Yellowtail_Regular.json');
 
     const textGeo = new TextGeometry('6PM · Pandora', {
       font,
       size: SIGN_2.FONT,
       height: 2,
-      curveSegments: 1,
-      bevelEnabled: false,
-      bevelSize: 2,
-      bevelThickness: 3,
-      bevelOffset: 0,
-      bevelSegments: 5,
     });
     textGeo.computeBoundingBox();
     textGeo.center();
     textGeo.translate(0, SIGN_2.TRANSLATE_Y, SIGN_2.DEPTH / 2 + 2);
 
-    const material = new THREE.MeshBasicMaterial({
-      color: 0xff57c4,
-    });
-    const textMesh = new THREE.Mesh(textGeo, material);
+    const textMesh = new THREE.Mesh(textGeo, this.glowMaterial);
+    textMesh.onAfterRender = () => {
+      this.tokyoText2Rendered = true;
+      this.checkTokyoLoaded();
+    };
     this.scene.add(textMesh);
     textMesh.layers.enable(1);
   };
@@ -289,14 +323,7 @@ export default class ThreeSF {
       SIGN_1.HEIGHT,
       SIGN_1.DEPTH
     );
-    const material = new THREE.MeshStandardMaterial({
-      envMap: this.textureCube,
-      envMapIntensity: 4,
-      color: 0x000000,
-      metalness: 0,
-      roughness: 0,
-    });
-    const backingMesh = new THREE.Mesh(geo, material);
+    const backingMesh = new THREE.Mesh(geo, this.glossMaterial);
     backingMesh.position.y = SIGN_1.TRANSLATE_Y;
     this.scene.add(backingMesh);
   };
@@ -307,19 +334,12 @@ export default class ThreeSF {
       SIGN_2.HEIGHT,
       SIGN_2.DEPTH
     );
-    const material = new THREE.MeshStandardMaterial({
-      envMap: this.textureCube,
-      envMapIntensity: 4,
-      color: 0x000000,
-      metalness: 0,
-      roughness: 0,
-    });
-    const backingMesh = new THREE.Mesh(geo, material);
+    const backingMesh = new THREE.Mesh(geo, this.glossMaterial);
     backingMesh.position.y = SIGN_2.TRANSLATE_Y;
     this.scene.add(backingMesh);
   };
 
-  createMesh = async () => {
+  createSFMesh = async () => {
     this.goldMaterial = new THREE.MeshStandardMaterial({
       envMap: this.textureCube,
       color: 0xffe691,
@@ -327,35 +347,47 @@ export default class ThreeSF {
       metalness: 1,
     });
 
-    if (this.isTokyo) {
-      await this.createBackingMesh();
-      await this.createKaraokeText();
-      await this.createMicrophone();
-      await this.createPandoraText();
-      await this.createBackingMesh2();
-    } else {
-      await this.createTextMesh();
-      await this.createStarMesh();
-    }
+    await this.createTextMesh();
+    await this.createStarMesh();
+  };
+
+  createTokyoMesh = async () => {
+    this.glowMaterial = new THREE.MeshBasicMaterial({
+      color: 0xff57c4,
+    });
+    this.glossMaterial = new THREE.MeshStandardMaterial({
+      envMap: this.textureCube,
+      envMapIntensity: 4,
+      color: 0x000000,
+      metalness: 0,
+      roughness: 0,
+    });
+
+    await this.createBackingMesh();
+    await this.createKaraokeText();
+    await this.createMicrophone();
+    await this.createPandoraText();
+    await this.createBackingMesh2();
   };
 
   setSceneBackground = async () => {
-    const loader = new THREE.CubeTextureLoader();
+    const loader = new THREE.CubeTextureLoader(
+      this.isTokyo ? this.tokyoLoadingManager : this.sfLoadingManager
+    );
     loader.setPath(`three/cube/${this.isTokyo ? 'tokyo' : 'sf'}/`);
 
-    return new Promise((res, rej) => {
-      loader
-        .loadAsync(['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg'])
-        .then((texture) => {
-          this.textureCube = texture;
-          this.textureCube.encoding = THREE.LinearEncoding;
+    this.textureCube = await loader.loadAsync([
+      'px.jpg',
+      'nx.jpg',
+      'py.jpg',
+      'ny.jpg',
+      'pz.jpg',
+      'nz.jpg',
+    ]);
+    this.textureCube.encoding = THREE.LinearEncoding;
 
-          this.scene.background = this.textureCube;
-          res(this.textureCube);
-          this.onComplete();
-        });
-      [];
-    });
+    this.scene.background = this.textureCube;
+    return this.textureCube;
   };
 
   init = async () => {
@@ -367,7 +399,12 @@ export default class ThreeSF {
 
     await this.initEnv();
     await this.setSceneBackground();
-    await this.createMesh();
+
+    if (this.isTokyo) {
+      await this.createTokyoMesh();
+    } else {
+      await this.createSFMesh();
+    }
 
     const [bloomComposer, finalComposer] =
       await this.processingHelper.initComposers(this.isTokyo);
