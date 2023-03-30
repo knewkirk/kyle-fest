@@ -21,10 +21,6 @@ export default ({ hasPermission, isMobile }: Props) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    console.log('once')
-  }, []);
-
-  useEffect(() => {
     if (hasPermission && !didInit && containerRef.current) {
       new Parallax(containerRef.current, {
         relativeInput: true,

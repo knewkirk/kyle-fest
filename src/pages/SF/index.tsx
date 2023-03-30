@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-import ThreeSF from '@three';
+import Microphone from '@components/Microphone';
+import Three from '@three'
 
 import './index.less';
 
@@ -12,21 +14,18 @@ export default () => {
 
   const onComplete = () => setIsLoading(false);
 
-  const initThree = React.useCallback(() => {
+  const initThree = useCallback(() => {
     if (!threeContainerRef.current || didInit) {
       return;
     }
     setDidInit(true);
-    const SF = new ThreeSF(threeContainerRef.current, onComplete);
+    const SF = new Three(false, threeContainerRef.current, onComplete);
     SF.init();
   }, [threeContainerRef.current, didInit]);
 
   useEffect(() => {
     initThree();
   }, [initThree]);
-
-  // for tokyo:
-  //https://threejs.org/examples/?q=postpro#webgl_postprocessing_unreal_bloom
 
   return (
     <>
@@ -35,6 +34,9 @@ export default () => {
           <p>🌞</p>
         </div>
       )}
+      <Link className="karaoke-link" to="/karaoke">
+        <Microphone className='microphone'/>
+      </Link>
       <div id="three-container" ref={threeContainerRef}></div>
     </>
   );

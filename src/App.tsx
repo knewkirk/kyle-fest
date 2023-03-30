@@ -16,6 +16,7 @@ import useIsMobile from '@hooks/useIsMobile';
 import Rainy from '@pages/Rainy';
 import Afters from '@pages/Afters';
 import SF from '@pages/SF';
+import Tokyo from '@pages/Tokyo';
 
 export default () => {
   const isMobile = useIsMobile();
@@ -60,6 +61,7 @@ export default () => {
       <Router>
         <Routes>
           <Route index element={<SF />} />
+          <Route path="/karaoke" element={ <Tokyo/> }/>
           <Route path="/old" element={<OldFrame />}>
             <Route
               index

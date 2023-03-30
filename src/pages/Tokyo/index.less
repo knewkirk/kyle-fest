@@ -1,0 +1,33 @@
+.main-link {
+  position: absolute;
+  font-size: 64px;
+  bottom: 20px;
+  left: 20px;
+  text-decoration: none;
+  width: 64px;
+  height: 64px;
+  font-family: 'Bowlby One SC';
+  line-height: 100%;
+
+  .link-text {
+    position: absolute;
+    background: linear-gradient(
+      to bottom,
+      #572c63 0%,
+      #cd9fcf 15%,
+      #ed90ea 30%,
+      #d956e0 50%,
+      #841f73 85%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    z-index: 2;
+  }
+
+  .link-text-bg {
+    position: absolute;
+    color: transparent;
+    text-shadow: 0 0 15px #000;
+  }
+}
