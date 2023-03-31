@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { useCallback, useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
-import useThree from '@hooks/useThree';
 import Microphone from '@components/Microphone';
+import useThree from '@hooks/useThree';
 import { Theme } from '@three';
 
 import './index.less';
@@ -25,7 +25,7 @@ export default () => {
   }, []);
 
   const { shouldMountLoading } = useThree({
-    theme: Theme.SF,
+    theme: Theme.Space,
     loadingEl,
     threeContainerEl,
   });
@@ -33,14 +33,14 @@ export default () => {
   return (
     <>
       {shouldMountLoading && (
-        <div className="sf-loading-bg" ref={loadingRef}>
-          <p>🌞</p>
+        <div className="space-loading-bg" ref={loadingRef}>
+          <p>🪐</p>
         </div>
       )}
-      <Link className="karaoke-link" to="/karaoke">
+      <Link className="space-karaoke-link" to="/karaoke">
         <Microphone className="microphone" />
       </Link>
-      <div id="sf-container" ref={threeContainerRef}></div>
+      <div id="space-container" ref={threeContainerRef}></div>
     </>
   );
 };

@@ -17,6 +17,7 @@ import Rainy from '@pages/Rainy';
 import Afters from '@pages/Afters';
 import SF from '@pages/SF';
 import Tokyo from '@pages/Tokyo';
+import Space from '@pages/Space';
 
 export default () => {
   const isMobile = useIsMobile();
@@ -62,11 +63,12 @@ export default () => {
         <Routes>
           <Route index element={<SF />} />
           <Route path="/karaoke" element={ <Tokyo/> }/>
+          <Route path="/space" element={ <Space/> }/>
           <Route path="/old" element={<OldFrame />}>
             <Route
               index
               element={
-                <Rainy hasPermission={hasPermission} isMobile={isMobile} />
+                <Rainy hasPermission={hasPermission} />
               }
             />
             <Route path="after-dark" element={<Afters />} />

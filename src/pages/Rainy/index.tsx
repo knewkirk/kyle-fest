@@ -13,10 +13,9 @@ import map from '@images/map-colorized.png';
 
 interface Props {
   hasPermission: boolean;
-  isMobile: boolean;
 }
 
-export default ({ hasPermission, isMobile }: Props) => {
+export default ({ hasPermission }: Props) => {
   const [didInit, setDidInit] = useState(false);
   const containerRef = useRef(null);
 
@@ -27,7 +26,7 @@ export default ({ hasPermission, isMobile }: Props) => {
       });
       setDidInit(true);
     }
-  }, [hasPermission, didInit, isMobile]);
+  }, [hasPermission, didInit]);
 
   return (
     <div className="gold-container" ref={containerRef}>

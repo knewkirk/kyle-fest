@@ -8,7 +8,10 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 
+import { Theme } from './index';
+
 export default class ProcessingHelper {
+  theme: Theme;
   camera: THREE.Camera;
   composer: EffectComposer;
   gui: GUI;
@@ -22,12 +25,13 @@ export default class ProcessingHelper {
 
   lutParams = {
     enabled: true,
-    lutSF: 'Bourbon 64.CUBE',
-    lutTokyo: 'Contrail 35.CUBE',
-    intensitySF: 0.5,
-    intensityTokyo: 0.8,
+    lut: {
+      [Theme.SF]: 'Bourbon 64.CUBE',
+      [Theme.Tokyo]: 'Contrail 35.CUBE',
+      [Theme.Space]: '',
+    },
+    intensity: { [Theme.SF]: 0.5, [Theme.Tokyo]: 0.8, [Theme.Space]: 1 },
     use2DLut: false,
-    autoRotate: true,
   };
 
   lutMap: Record<string, any> = {
@@ -70,28 +74,25 @@ export default class ProcessingHelper {
   };
 
   constructor(
+    theme: Theme,
     renderer: THREE.WebGLRenderer,
     scene: THREE.Scene,
     camera: THREE.Camera,
     gui: GUI
   ) {
+    this.theme = theme;
     this.renderer = renderer;
     this.scene = scene;
     this.camera = camera;
     this.gui = gui;
   }
 
-  loadLUT = async (): Promise<LUTCubeResult> => {
-    return new Promise((res, rej) => {
-      new LUTCubeLoader()
-        .loadAsync('/three/LUTs/Bourbon 64.CUBE')
-        .then((result: any) => {
-          res(result);
-        });
-    });
+  private loadLUT = async (name: string): Promise<LUTCubeResult> => {
+    const loader = new LUTCubeLoader();
+    return await loader.loadAsync(name);
   };
 
-  loadLUTs = async () => {
+  private loadLUTs = async () => {
     let count = 0;
     const total = Object.keys(this.lutMap).length;
 
@@ -112,15 +113,13 @@ export default class ProcessingHelper {
     });
   };
 
-  addLUTControls = () => {
+  private addLUTControls = () => {
     this.gui.add(this.lutParams, 'enabled');
   };
 
-  updateLUT = (isTokyo: boolean) => {
-    const lutName = isTokyo ? this.lutParams.lutTokyo : this.lutParams.lutSF;
-    const intensity = isTokyo
-      ? this.lutParams.intensityTokyo
-      : this.lutParams.intensitySF;
+  updateLUT = (theme: Theme) => {
+    const lutName = this.lutParams.lut[theme];
+    const intensity = this.lutParams.intensity[theme];
     this.lutPass.enabled =
       this.lutParams.enabled && Boolean(this.lutMap[lutName]);
     this.lutPass.intensity = intensity;
@@ -130,9 +129,7 @@ export default class ProcessingHelper {
     }
   };
 
-  initComposers = async (
-    isTokyo: boolean
-  ): Promise<[EffectComposer, EffectComposer]> => {
+  initComposers = async (): Promise<[EffectComposer, EffectComposer]> => {
     const renderScene = new RenderPass(this.scene, this.camera);
 
     const bloomPass = new UnrealBloomPass(
@@ -167,7 +164,7 @@ export default class ProcessingHelper {
     this.lutPass = new LUTPass({});
     await this.loadLUTs();
     this.addLUTControls();
-    this.updateLUT(isTokyo);
+    this.updateLUT(this.theme);
 
     const finalComposer = new EffectComposer(this.renderer);
     finalComposer.addPass(renderScene);
