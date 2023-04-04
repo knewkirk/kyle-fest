@@ -53,7 +53,6 @@ export default class SFMeshBuilder extends AbstractMeshBuilder {
     const merged = mergeBufferGeometries(geometries);
     const textMesh = new THREE.Mesh(merged, this.goldMaterial);
     textMesh.onAfterRender = this.onAfterRender(this);
-    console.log(this);
     return textMesh;
   };
 

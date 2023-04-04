@@ -30,7 +30,6 @@ export default abstract class MeshBuilder {
     this.gui = options.gui;
 
     this.loadingManager = new THREE.LoadingManager(() => {
-      console.log('loadmanager');
       this.loadersComplete = true;
       this.checkLoaded();
     });
@@ -44,7 +43,6 @@ export default abstract class MeshBuilder {
 
   onAfterRender = (self: MeshBuilder) =>
     function (): void {
-      console.log('rendercount+', self.meshRenderCount);
       self.meshRenderCount++;
       if (self.meshRenderCount >= self.EXPECTED_MESH_RENDERS) {
         self.meshRenderComplete = true;
