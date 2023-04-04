@@ -59,7 +59,7 @@ export default class Three {
       10000
     );
 
-    this.camera.position.x = 100;
+    this.camera.position.x = this.theme === Theme.Space ? 400 : 100;
     this.camera.position.y = this.theme === Theme.Tokyo ? -100 : -10;
     this.camera.position.z = 380;
     this.camera.lookAt(0, 0, 0);
