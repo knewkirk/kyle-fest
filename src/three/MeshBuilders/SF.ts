@@ -5,41 +5,14 @@ import { FontLoader, Font } from 'three/examples/jsm/loaders/FontLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 
-interface Options {
-  envMap: THREE.Texture;
-  onComplete(): void;
-}
+import AbstractMeshBuilder from './Abstract';
 
-interface MeshResult {
-  textMesh: THREE.Mesh;
-  starMesh: THREE.Group;
-}
-
-export default class SFMeshBuilder {
-  envMap: THREE.Texture;
+export default class SFMeshBuilder extends AbstractMeshBuilder {
   font: Font;
   goldMaterial: THREE.Material;
-  loadingManager: THREE.LoadingManager;
-  onComplete: () => void;
+  starObj: THREE.Object3D;
 
-  loadersComplete = false;
-  meshRenderComplete = false;
-
-  constructor({ envMap, onComplete }: Options) {
-    this.envMap = envMap;
-    this.onComplete = onComplete;
-
-    this.loadingManager = new THREE.LoadingManager(() => {
-      this.loadersComplete = true;
-      this.checkLoaded();
-    });
-  }
-
-  checkLoaded = () => {
-    if (this.loadersComplete && this.meshRenderComplete) {
-      this.onComplete();
-    }
-  };
+  EXPECTED_MESH_RENDERS = 1;
 
   private createSFTextGeo = (
     text: string,
@@ -66,7 +39,7 @@ export default class SFMeshBuilder {
   private createTextMesh = async (): Promise<THREE.Mesh> => {
     const fontLoader = new FontLoader(this.loadingManager);
     this.font = await fontLoader.loadAsync(
-      '/three/fonts/Bowlby-One-SC_Regular.json'
+      '/three/fonts/Bowlby One_Regular.json'
     );
 
     const geometries = [];
@@ -79,11 +52,8 @@ export default class SFMeshBuilder {
 
     const merged = mergeBufferGeometries(geometries);
     const textMesh = new THREE.Mesh(merged, this.goldMaterial);
-    textMesh.onAfterRender = () => {
-      this.meshRenderComplete = true;
-      this.checkLoaded();
-      textMesh.onAfterRender = () => {};
-    };
+    textMesh.onAfterRender = this.onAfterRender(this);
+    console.log(this);
     return textMesh;
   };
 
@@ -100,20 +70,28 @@ export default class SFMeshBuilder {
     starObj.position.y = -500;
     starObj.position.z = -7000;
     starObj.rotateX(Math.PI / 2);
+    this.starObj = starObj;
     return starObj;
   };
 
-  createMesh = async (): Promise<MeshResult> => {
+  createMesh = async (): Promise<THREE.Object3D[]> => {
     this.goldMaterial = new THREE.MeshStandardMaterial({
       envMap: this.envMap,
       color: 0xffe691,
-      roughness: 0.01,
+      roughness: 0,
       metalness: 1,
+      emissive: 0xffe691,
+      emissiveIntensity: .06,
     });
+    this.gui.add(this.goldMaterial, 'emissiveIntensity', 0, .2, .01);
 
     const textMesh = await this.createTextMesh();
     const starMesh = await this.createStarMesh();
 
-    return { textMesh, starMesh };
+    return [textMesh, starMesh];
   };
+
+  renderUpdate = () => {
+    this.starObj.rotation.z -= 0.01;
+  }
 }

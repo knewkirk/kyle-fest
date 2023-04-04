@@ -6,8 +6,8 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import ProcessingHelper from '@three/ProcessingHelper';
-import SFMeshBuilder from '@three/SFMeshBuilder';
-import TokyoMeshBuilder from '@three/TokyoMeshBuilder';
+import MeshBuilder from '@three/MeshBuilders/Abstract';
+import { meshBuilderFactory } from '@three/MeshBuilders/factory';
 
 export enum Theme {
   SF = 'SF',
@@ -28,16 +28,12 @@ export default class Three {
   processingHelper: ProcessingHelper;
   renderer: THREE.WebGLRenderer;
   scene: THREE.Scene;
-  starMesh: THREE.Object3D;
   textureCube: THREE.CubeTexture;
   bloomLayer: THREE.Layers;
   didInit = false;
+  meshBuilder: MeshBuilder;
 
-  constructor(
-    theme: Theme,
-    container: HTMLElement,
-    onComplete: () => void
-  ) {
+  constructor(theme: Theme, container: HTMLElement, onComplete: () => void) {
     this.theme = theme;
     this.container = container;
     this.onComplete = onComplete;
@@ -45,7 +41,7 @@ export default class Three {
 
   initEnv = async () => {
     this.gui = new GUI();
-    this.gui.hide();
+    // this.gui.hide();
 
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -63,18 +59,12 @@ export default class Three {
       10000
     );
 
-    if (this.theme === Theme.Tokyo) {
-      this.camera.position.x = 100;
-      this.camera.position.y = -100;
-      this.camera.position.z = 380;
-      this.bloomLayer = new THREE.Layers();
-      this.bloomLayer.set(1);
-    } else {
-      this.camera.position.x = 100;
-      this.camera.position.y = -10;
-      this.camera.position.z = 380;
-    }
+    this.camera.position.x = 100;
+    this.camera.position.y = this.theme === Theme.Tokyo ? -100 : -10;
+    this.camera.position.z = 380;
     this.camera.lookAt(0, 0, 0);
+    this.bloomLayer = new THREE.Layers();
+    this.bloomLayer.set(1);
 
     this.scene = new THREE.Scene();
     this.scene.matrixWorldAutoUpdate = true;
@@ -109,30 +99,9 @@ export default class Three {
     this.gui.add(this.orbitControls, 'autoRotateSpeed', 0, 1, 0.1);
   };
 
-  createSFMesh = async () => {
-    const meshBuilder = new SFMeshBuilder({
-      envMap: this.textureCube,
-      onComplete: this.onComplete,
-    });
-    const { textMesh, starMesh } = await meshBuilder.createMesh();
-    this.scene.add(textMesh, starMesh);
-    this.starMesh = starMesh;
-  };
-
-  createTokyoMesh = async () => {
-    const meshBuilder = new TokyoMeshBuilder({
-      envMap: this.textureCube,
-      onComplete: this.onComplete,
-    });
-    const meshes = await meshBuilder.createMesh();
-    this.scene.add(...meshes);
-  };
-
   setSceneBackground = async () => {
     const loader = new THREE.CubeTextureLoader();
-    loader.setPath(
-      `three/cube/${this.theme.toLowerCase()}/`
-    );
+    loader.setPath(`three/cube/${this.theme.toLowerCase()}/`);
 
     this.textureCube = await loader.loadAsync([
       'px.jpg',
@@ -158,12 +127,14 @@ export default class Three {
     await this.initEnv();
     await this.setSceneBackground();
 
-    if (this.theme === Theme.Space) {
-    } else if (this.theme === Theme.Tokyo) {
-      await this.createTokyoMesh();
-    } else {
-      await this.createSFMesh();
-    }
+    this.meshBuilder = meshBuilderFactory({
+      theme: this.theme,
+      envMap: this.textureCube,
+      onComplete: this.onComplete,
+      gui: this.gui,
+    });
+    const mesh = await this.meshBuilder.createMesh();
+    this.scene.add(...mesh);
 
     const [bloomComposer, finalComposer] =
       await this.processingHelper.initComposers();
@@ -203,17 +174,13 @@ export default class Three {
     }
   };
 
-  render = () => {
-    if (this.theme === Theme.SF && this.starMesh) {
-      this.starMesh.rotation.z -= 0.01;
-    } else {
-      this.scene.background = null;
-      this.scene.traverse(this.darkenNonBloomed);
-      this.bloomComposer.render();
-    }
-
+  render = (time: number) => {
+    this.scene.background = null;
+    this.scene.traverse(this.darkenNonBloomed);
+    this.bloomComposer.render();
+    this.meshBuilder.renderUpdate(time);
     this.orbitControls.update();
-    this.processingHelper.updateLUT(this.theme);
+    this.processingHelper.updateLUT();
     this.scene.background = this.textureCube;
     this.scene.traverse(this.restoreMaterial);
     this.finalComposer.render();

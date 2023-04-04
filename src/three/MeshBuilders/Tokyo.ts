@@ -4,15 +4,7 @@ import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 import { FontLoader, Font } from 'three/examples/jsm/loaders/FontLoader';
 
-interface Options {
-  envMap: THREE.Texture;
-  onComplete(): void;
-}
-
-interface MeshResult {
-  textMesh: THREE.Mesh;
-  starMesh: THREE.Group;
-}
+import AbstractMeshBuilder from './Abstract';
 
 const SIGN_1 = {
   TRANSLATE_Y: 50,
@@ -33,43 +25,12 @@ const SIGN_2 = {
   FONT: 16,
 };
 
-const MESH_RENDERS_EXPECTED = 3;
 
-export default class TokyoMeshBuilder {
-
-  envMap: THREE.Texture;
+export default class TokyoMeshBuilder extends AbstractMeshBuilder {
   glowMaterial: THREE.Material;
   glossMaterial: THREE.Material;
-  loadingManager: THREE.LoadingManager;
-  onComplete: () => void;
 
-  loadersComplete = false;
-  meshRenderCount = 0;
-
-  constructor({
-    envMap,
-    onComplete,
-  }: Options) {
-    this.envMap = envMap;
-    this.onComplete = onComplete;
-
-    this.loadingManager = new THREE.LoadingManager(() => {
-      this.loadersComplete = true;
-      this.checkLoaded();
-    });
-  }
-
-  checkLoaded = () => {
-    if (this.loadersComplete && this.meshRenderCount >= MESH_RENDERS_EXPECTED) {
-      this.onComplete();
-    }
-  };
-
-  onAfterRender = (self: TokyoMeshBuilder) => function(): void {
-    self.meshRenderCount++;
-    self.checkLoaded();
-    this.onAfterRender = () => {};
-  }
+  MESH_RENDERS_EXPECTED = 3;
 
   private createKaraokeText = async () => {
     const loader = new FontLoader(this.loadingManager);
@@ -190,4 +151,6 @@ export default class TokyoMeshBuilder {
       this.createPandoraText(),
     ]);
   };
+
+  renderUpdate = () => {}
 }

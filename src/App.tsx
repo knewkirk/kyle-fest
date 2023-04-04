@@ -13,8 +13,8 @@ import './App.less';
 import Permissions from '@components/Permissions';
 import useIsMobile from '@hooks/useIsMobile';
 
-import Rainy from '@pages/Rainy';
-import Afters from '@pages/Afters';
+import Rainy from '@pages/old/Rainy';
+import Afters from '@pages/old/Afters';
 import SF from '@pages/SF';
 import Tokyo from '@pages/Tokyo';
 import Space from '@pages/Space';
@@ -63,7 +63,7 @@ export default () => {
         <Routes>
           <Route index element={<SF />} />
           <Route path="/karaoke" element={ <Tokyo/> }/>
-          <Route path="/space" element={ <Space/> }/>
+          <Route path="/afters" element={ <Space/> }/>
           <Route path="/old" element={<OldFrame />}>
             <Route
               index

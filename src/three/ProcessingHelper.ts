@@ -34,6 +34,24 @@ export default class ProcessingHelper {
     use2DLut: false,
   };
 
+  bloomParams = {
+    [Theme.Space]: {
+      threshold: 0.10,
+      strength: .6,
+      radius: 0.15,
+    },
+    [Theme.Tokyo]: {
+      threshold: 0,
+      strength: 2,
+      radius: 1,
+    },
+    [Theme.SF]: {
+      threshold: 0,
+      strength: 0,
+      radius: 0,
+    },
+  };
+
   lutMap: Record<string, any> = {
     'Arabica 12.CUBE': null,
     'Ava 614.CUBE': null, // bright contrast
@@ -117,9 +135,9 @@ export default class ProcessingHelper {
     this.gui.add(this.lutParams, 'enabled');
   };
 
-  updateLUT = (theme: Theme) => {
-    const lutName = this.lutParams.lut[theme];
-    const intensity = this.lutParams.intensity[theme];
+  updateLUT = () => {
+    const lutName = this.lutParams.lut[this.theme];
+    const intensity = this.lutParams.intensity[this.theme];
     this.lutPass.enabled =
       this.lutParams.enabled && Boolean(this.lutMap[lutName]);
     this.lutPass.intensity = intensity;
@@ -138,9 +156,12 @@ export default class ProcessingHelper {
       0.4,
       0.85
     );
-    bloomPass.threshold = 0;
-    bloomPass.strength = 2;
-    bloomPass.radius = 1;
+    bloomPass.threshold = this.bloomParams[this.theme].threshold;
+    bloomPass.strength = this.bloomParams[this.theme].strength;
+    bloomPass.radius = this.bloomParams[this.theme].radius;
+    this.gui.add(bloomPass, 'threshold', 0, 1);
+    this.gui.add(bloomPass, 'strength', 0, 3);
+    this.gui.add(bloomPass, 'radius', 0, 3);
 
     const bloomComposer = new EffectComposer(this.renderer);
     bloomComposer.renderToScreen = false;
@@ -164,7 +185,7 @@ export default class ProcessingHelper {
     this.lutPass = new LUTPass({});
     await this.loadLUTs();
     this.addLUTControls();
-    this.updateLUT(this.theme);
+    this.updateLUT();
 
     const finalComposer = new EffectComposer(this.renderer);
     finalComposer.addPass(renderScene);

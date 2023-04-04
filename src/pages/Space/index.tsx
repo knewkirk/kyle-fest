@@ -1,28 +1,14 @@
 import * as React from 'react';
-import { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
 import Microphone from '@components/Microphone';
+import useStateRef from '@hooks/useStateRef';
 import useThree from '@hooks/useThree';
 import { Theme } from '@three';
 
-import './index.less';
-
 export default () => {
-  const [loadingEl, setLoadingEl] = useState<HTMLElement>(null);
-  const [threeContainerEl, setThreeContainerEl] = useState<HTMLElement>(null);
-  const loadingRef = useCallback((el: HTMLElement) => {
-    if (!el) {
-      return;
-    }
-    setLoadingEl(el);
-  }, []);
-  const threeContainerRef = useCallback((el: HTMLElement) => {
-    if (!el) {
-      return;
-    }
-    setThreeContainerEl(el);
-  }, []);
+  const [loadingEl, setLoadingRef] = useStateRef();
+  const [threeContainerEl, setThreeContainerRef] = useStateRef();
 
   const { shouldMountLoading } = useThree({
     theme: Theme.Space,
@@ -33,14 +19,14 @@ export default () => {
   return (
     <>
       {shouldMountLoading && (
-        <div className="space-loading-bg" ref={loadingRef}>
-          <p>🪐</p>
+        <div className="loading-bg space" ref={setLoadingRef}>
+          <p className="loading-icon">🪐</p>
         </div>
       )}
-      <Link className="space-karaoke-link" to="/karaoke">
-        <Microphone className="microphone" />
+      <Link className="bottom-link left" to="/karaoke">
+        <Microphone className="link-icon" />
       </Link>
-      <div id="space-container" ref={threeContainerRef}></div>
+      <div id="space-container" ref={setThreeContainerRef}></div>
     </>
   );
 };

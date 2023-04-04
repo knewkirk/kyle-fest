@@ -8,7 +8,6 @@ interface Args {
 }
 
 export default ({ theme, loadingEl, threeContainerEl }: Args) => {
-  console.log({ threeContainerEl, loadingEl });
   const [didInit, setDidInit] = useState(false);
   const [shouldMountLoading, setShouldMountLoading] = useState(true);
   const [threeInstance, setThreeInstance] = useState(null);
@@ -17,6 +16,7 @@ export default ({ theme, loadingEl, threeContainerEl }: Args) => {
     if (!loadingEl) {
       return;
     }
+
     loadingEl.classList.add('fade-out');
     loadingEl.addEventListener('transitionend', () => {
       setShouldMountLoading(false);
@@ -24,7 +24,6 @@ export default ({ theme, loadingEl, threeContainerEl }: Args) => {
   }, [loadingEl]);
 
   useEffect(() => {
-    console.log('mount?', { threeContainerEl, didInit });
     if (!threeContainerEl || didInit) {
       return;
     }
@@ -34,14 +33,13 @@ export default ({ theme, loadingEl, threeContainerEl }: Args) => {
     setThreeInstance(three);
 
     return () => {
-      console.log('unmount?')
       if (!threeInstance) {
         return;
       }
       threeInstance.cleanup();
       setDidInit(false);
       setThreeInstance(null);
-    }
+    };
   }, [threeContainerEl]);
 
   return {
