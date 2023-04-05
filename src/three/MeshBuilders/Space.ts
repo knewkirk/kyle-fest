@@ -16,6 +16,7 @@ const LINEUP = [
   'TNB',
   'MAXXX',
   'CARSON',
+  'ALAFLOW',
 ];
 
 export default class SpaceMeshBuilder extends AbstractMeshBuilder  {

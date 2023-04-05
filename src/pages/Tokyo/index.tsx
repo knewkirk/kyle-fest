@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 
 import useStateRef from '@hooks/useStateRef';
 import useThree from '@hooks/useThree';
@@ -22,12 +21,12 @@ export default () => {
           <p className="loading-icon">🌚</p>
         </div>
       )}
-      <Link className="bottom-link left" to="/">
+      <a href="/" className="bottom-link left">
         <span className="link-icon">★</span>
-      </Link>
-      <Link className="bottom-link right" to="/afters">
+      </a>
+      <a href="/afters" className="bottom-link right">
         <span className="link-icon">🪐</span>
-      </Link>
+      </a>
       <div id="tokyo-container" ref={setThreeContainerRef}></div>
     </>
   );

@@ -10,7 +10,7 @@ interface Args {
 export default ({ theme, loadingEl, threeContainerEl }: Args) => {
   const [didInit, setDidInit] = useState(false);
   const [shouldMountLoading, setShouldMountLoading] = useState(true);
-  const [threeInstance, setThreeInstance] = useState(null);
+  const [threeInstance, setThreeInstance] = useState<Three>(null);
 
   const onComplete = useCallback(() => {
     if (!loadingEl) {
@@ -31,18 +31,21 @@ export default ({ theme, loadingEl, threeContainerEl }: Args) => {
     three.init();
     setDidInit(true);
     setThreeInstance(three);
-
-    return () => {
-      if (!threeInstance) {
-        return;
-      }
-      threeInstance.cleanup();
-      setDidInit(false);
-      setThreeInstance(null);
-    };
   }, [threeContainerEl]);
+
+  // TODO: Verify this actually helps -
+  // seems like a hard page nav works perhaps better than a <Link>
+  const cleanup = useCallback(() => {
+    if (!threeInstance) {
+      return;
+    }
+    threeInstance.cleanup();
+    setDidInit(false);
+    setThreeInstance(null);
+  }, [threeInstance]);
 
   return {
     shouldMountLoading,
+    cleanup,
   };
 };

@@ -5,6 +5,7 @@ import { LUTPass } from 'three/examples/jsm/postprocessing/LUTPass';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
+import { disposeHierarchy, disposeNode  } from '@helpers/disposeThreeHierarchy';
 import ProcessingHelper from '@three/ProcessingHelper';
 import MeshBuilder from '@three/MeshBuilders/Abstract';
 import { meshBuilderFactory } from '@three/MeshBuilders/factory';
@@ -51,6 +52,7 @@ export default class Three {
     this.renderer.toneMapping = THREE.LinearToneMapping;
     this.renderer.toneMappingExposure = 1.1;
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
 
     this.camera = new THREE.PerspectiveCamera(
       45,
@@ -86,6 +88,10 @@ export default class Three {
   cleanup = () => {
     this.gui.destroy();
     delete this.gui;
+
+    disposeHierarchy(this.scene, disposeNode);
+    this.renderer.renderLists.dispose();
+    delete this.renderer;
   };
 
   addOrbitControls = () => {

@@ -28,7 +28,7 @@ export default class ProcessingHelper {
     lut: {
       [Theme.SF]: 'Bourbon 64.CUBE',
       [Theme.Tokyo]: 'Contrail 35.CUBE',
-      [Theme.Space]: '',
+      [Theme.Space]: 'Teigen 28.CUBE',
     },
     intensity: { [Theme.SF]: 0.5, [Theme.Tokyo]: 0.8, [Theme.Space]: 1 },
     use2DLut: false,
@@ -53,42 +53,42 @@ export default class ProcessingHelper {
   };
 
   lutMap: Record<string, any> = {
-    'Arabica 12.CUBE': null,
-    'Ava 614.CUBE': null, // bright contrast
-    'Azrael 93.CUBE': null,
-    'Bourbon 64.CUBE': null, // ***** classy, warm, bright *****
-    'Byers 11.CUBE': null, // pink/purple/contrast
-    'Chemical 168.CUBE': null, // yellowgreen < good to balance magenta?
-    'Clayton 33.CUBE': null,
-    'Clouseau 54.CUBE': null,
-    'Cobi 3.CUBE': null,
-    'Contrail 35.CUBE': null, // contrast, p flat
-    'Cubicle 99.CUBE': null,
-    'Django 25.CUBE': null,
-    'Domingo 145.CUBE': null, // darker contrast
-    'Faded 47.CUBE': null,
-    'Folger 50.CUBE': null,
-    'Fusion 88.CUBE': null,
-    'Hyla 68.CUBE': null, // + pinkish
-    'Korben 214.CUBE': null, // + similar to bourbon, less bright
-    'Lenox 340.CUBE': null,
-    'Lucky 64.CUBE': null, // desaturated a bit
-    'McKinnon 75.CUBE': null,
-    'Milo 5.CUBE': null,
-    'Neon 770.CUBE': null, // < maybe for tokyo
-    'Paladin 1875.CUBE': null,
-    'Pasadena 21.CUBE': null,
-    'Pitaya 15.CUBE': null,
-    'Reeve 38.CUBE': null,
-    'Remy 24.CUBE': null,
-    'Sprocket 231.CUBE': null,
+    // 'Arabica 12.CUBE': null,
+    // 'Ava 614.CUBE': null,
+    // 'Azrael 93.CUBE': null,
+    'Bourbon 64.CUBE': null,
+    // 'Byers 11.CUBE': null,
+    // 'Chemical 168.CUBE': null,
+    // 'Clayton 33.CUBE': null,
+    // 'Clouseau 54.CUBE': null,
+    // 'Cobi 3.CUBE': null,
+    'Contrail 35.CUBE': null,
+    // 'Cubicle 99.CUBE': null,
+    // 'Django 25.CUBE': null,
+    // 'Domingo 145.CUBE': null,
+    // 'Faded 47.CUBE': null,
+    // 'Folger 50.CUBE': null,
+    // 'Fusion 88.CUBE': null,
+    // 'Hyla 68.CUBE': null,
+    // 'Korben 214.CUBE': null,
+    // 'Lenox 340.CUBE': null,
+    // 'Lucky 64.CUBE': null,
+    // 'McKinnon 75.CUBE': null,
+    // 'Milo 5.CUBE': null,
+    // 'Neon 770.CUBE': null,
+    // 'Paladin 1875.CUBE': null,
+    // 'Pasadena 21.CUBE': null,
+    // 'Pitaya 15.CUBE': null,
+    // 'Reeve 38.CUBE': null,
+    // 'Remy 24.CUBE': null,
+    // 'Sprocket 231.CUBE': null,
     'Teigen 28.CUBE': null,
-    'Trent 18.CUBE': null,
-    'Tweed 71.CUBE': null, //
-    'Vireo 37.CUBE': null,
-    'Zed 32.CUBE': null,
-    'Zeke 39.CUBE': null,
-    'Presetpro-Cinematic.3dl': null,
+    // 'Trent 18.CUBE': null,
+    // 'Tweed 71.CUBE': null,
+    // 'Vireo 37.CUBE': null,
+    // 'Zed 32.CUBE': null,
+    // 'Zeke 39.CUBE': null,
+    // 'Presetpro-Cinematic.3dl': null,
   };
 
   constructor(
@@ -105,11 +105,18 @@ export default class ProcessingHelper {
     this.gui = gui;
   }
 
-  private loadLUT = async (name: string): Promise<LUTCubeResult> => {
+  /**
+   * Load only the LUT being used for this scene
+   */
+  private loadLUT = async () => {
+    const lutName = this.lutParams.lut[this.theme];
     const loader = new LUTCubeLoader();
-    return await loader.loadAsync(name);
+    this.lutMap[lutName] = await loader.loadAsync(`/three/LUTs/${lutName}`);
   };
 
+  /**
+   * Load ALL of the LUTs - good for experimenting with GUI
+   */
   private loadLUTs = async () => {
     let count = 0;
     const total = Object.keys(this.lutMap).length;
@@ -133,6 +140,8 @@ export default class ProcessingHelper {
 
   private addLUTControls = () => {
     this.gui.add(this.lutParams, 'enabled');
+    // this.gui.add(this.lutParams.lut, this.theme, Object.keys(this.lutMap));
+    this.gui.add(this.lutParams.intensity, this.theme, 0, 2, 0.1);
   };
 
   updateLUT = () => {
@@ -183,7 +192,7 @@ export default class ProcessingHelper {
     finalPass.needsSwap = true;
 
     this.lutPass = new LUTPass({});
-    await this.loadLUTs();
+    await this.loadLUT();
     this.addLUTControls();
     this.updateLUT();
 

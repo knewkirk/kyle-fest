@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 
 import Microphone from '@components/Microphone';
 import useStateRef from '@hooks/useStateRef';
@@ -23,9 +22,9 @@ export default () => {
           <p className="loading-icon">🪐</p>
         </div>
       )}
-      <Link className="bottom-link left" to="/karaoke">
+      <a href="/karaoke" className="bottom-link left">
         <Microphone className="link-icon" />
-      </Link>
+      </a>
       <div id="space-container" ref={setThreeContainerRef}></div>
     </>
   );

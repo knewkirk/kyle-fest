@@ -62,15 +62,10 @@ export default () => {
       <Router>
         <Routes>
           <Route index element={<SF />} />
-          <Route path="/karaoke" element={ <Tokyo/> }/>
-          <Route path="/afters" element={ <Space/> }/>
+          <Route path="/karaoke" element={<Tokyo />} />
+          <Route path="/afters" element={<Space />} />
           <Route path="/old" element={<OldFrame />}>
-            <Route
-              index
-              element={
-                <Rainy hasPermission={hasPermission} />
-              }
-            />
+            <Route index element={<Rainy hasPermission={hasPermission} />} />
             <Route path="after-dark" element={<Afters />} />
           </Route>
         </Routes>
