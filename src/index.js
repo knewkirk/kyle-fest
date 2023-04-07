@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyA9hhQYBtIrSqBDEL44k0ScVNhU-QsF2BA',
+  apiKey: FIREBASE_API_KEY,
   authDomain: 'kyle-fest.firebaseapp.com',
   projectId: 'kyle-fest',
   storageBucket: 'kyle-fest.appspot.com',
