@@ -4,8 +4,8 @@
   "description": "The coolest thing to happen since March 2020",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --watch",
     "build": "webpack",
+    "watch": "webpack --watch",
     "serve": "firebase serve --only hosting",
     "preview": "firebase hosting:channel:deploy b",
     "deploy": "webpack --env production && firebase deploy --only hosting",
