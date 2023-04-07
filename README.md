@@ -12,6 +12,8 @@ The current version (reachable at the root) uses [three.js](https://threejs.org/
 ## Installation
 `> yarn`
 
+And copy `.env.example` to `.env` and get the firebase API key from Kyle.
+
 ## Development
 **To build:**
 
