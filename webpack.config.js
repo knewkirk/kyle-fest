@@ -4,7 +4,7 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
-module.exports = {
+module.exports = (env) => ({
   cache: false,
   entry: path.resolve(__dirname, 'src/index.js'),
   mode: 'development',
@@ -58,6 +58,9 @@ module.exports = {
     new CopyPlugin({
       patterns: [{ from: 'static', to: '' }],
     }),
+    new webpack.DefinePlugin({
+      PRODUCTION: JSON.stringify(env.production),
+    }),
   ],
   output: {
     path: path.resolve(__dirname, 'public/'),
@@ -65,4 +68,4 @@ module.exports = {
     filename: '[name].[contenthash].js',
     clean: true,
   },
-};
+});

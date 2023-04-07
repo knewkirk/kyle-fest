@@ -8,7 +8,7 @@
     "build": "webpack",
     "serve": "firebase serve --only hosting",
     "preview": "firebase hosting:channel:deploy b",
-    "deploy": "firebase deploy --only hosting",
+    "deploy": "webpack --env production && firebase deploy --only hosting",
     "analyze": "webpack --analyze"
   },
   "repository": "git+https://github.com/knewkirk/kyle-fest.git",
@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/knewkirk/kyle-fest#readme",
   "dependencies": {
+    "firebase": "^9.19.1",
     "parallax-js": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -18,6 +18,7 @@ import Afters from '@pages/old/Afters';
 import SF from '@pages/SF';
 import Tokyo from '@pages/Tokyo';
 import Space from '@pages/Space';
+import Lineup from '@pages/Lineup';
 
 export default () => {
   const isMobile = useIsMobile();
@@ -62,6 +63,7 @@ export default () => {
       <Router>
         <Routes>
           <Route index element={<SF />} />
+          <Route path="/edit-lineup" element={<Lineup />} />
           <Route path="/karaoke" element={<Tokyo />} />
           <Route path="/afters" element={<Space />} />
           <Route path="/old" element={<OldFrame />}>

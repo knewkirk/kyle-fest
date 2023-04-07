@@ -42,7 +42,9 @@ export default class Three {
 
   initEnv = async () => {
     this.gui = new GUI();
-    this.gui.hide();
+    if (PRODUCTION) {
+      this.gui.hide();
+    }
 
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
