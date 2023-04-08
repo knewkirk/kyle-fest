@@ -20,6 +20,7 @@
 
   * {
     box-sizing: border-box;
+    font-family: monospace;
   }
 
   pre {
@@ -41,6 +42,7 @@
   .edit-section {
     display: flex;
     align-items: stretch;
+    justify-content: center;
     height: 32px;
     margin-bottom: 32px;
     width: 65%;
@@ -56,12 +58,10 @@
       border-color: #fff;
       border-radius: 0;
       color: #fff;
-      font-family: monospace;
+      font-size: 16px;
     }
 
     .btn {
-      margin-left: 8px;
-      width: 32px;
       background: none;
       color: white;
       border: 1px solid white;
@@ -70,6 +70,16 @@
 
       &:active {
         box-shadow: inset 0 0 1px 1px #fff;
+      }
+
+      &.login {
+        width: 180px;
+      }
+
+      &.add {
+        margin-left: 8px;
+        width: 32px;
+        flex: 0 0 32px;
       }
     }
   }
@@ -81,10 +91,10 @@
 
   .lineup-container {
     flex: 1;
-    margin: 0 0 0 48px;
+    margin: 0 0 0 -48px;
     padding: 0;
     overflow: auto;
-    align-self: flex-start;
+    // align-self: flex-start;
 
     .remove {
       font-size: 20px;

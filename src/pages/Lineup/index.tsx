@@ -1,9 +1,12 @@
 import { getDatabase, ref, set, get } from 'firebase/database';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-
-import spinner from '@images/ball-search.gif';
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+} from 'firebase/auth';
 
 import './index.less';
 
@@ -13,12 +16,23 @@ export default () => {
   const [auth, setAuth] = useState(null);
   const [newAct, setNewAct] = useState('');
   const [error, setError] = useState('');
-  const [isEmpty, setIsEmpty] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoggedOut, setIsLoggedOut] = useState(null);
+  const [UID, setUID] = useState('');
 
   useEffect(() => {
-    const auth = getAuth();
-    setAuth(auth);
+    const _auth = getAuth();
+    setAuth(_auth);
+
+    onAuthStateChanged(_auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        setUID(uid);
+        setIsLoggedOut(false);
+      } else {
+        setIsLoggedOut(true);
+      }
+    });
 
     const db = getDatabase();
     const dbRef = ref(db);
@@ -30,8 +44,7 @@ export default () => {
         if (snapshot.exists()) {
           setLineup(snapshot.val());
         } else {
-          setIsEmpty(true);
-          console.log('No data available');
+          console.warn('No data available');
         }
       })
       .catch((error) => {
@@ -51,12 +64,13 @@ export default () => {
   }, [auth]);
 
   const add = useCallback(() => {
-    if (!dbRef || !newAct.length) {
+    const toAdd = newAct.trim();
+    if (!dbRef || !toAdd.length) {
       return;
     }
-    set(dbRef, [...lineup, newAct]).then(
+    set(dbRef, [...lineup, toAdd]).then(
       (res) => {
-        setLineup([...lineup, newAct]);
+        setLineup([...lineup, toAdd]);
         setNewAct('');
       },
       (err) => {
@@ -89,34 +103,45 @@ export default () => {
   return (
     <div className="edit-lineup">
       <h1 className="headline">Edit Lineup</h1>
-      <div className="edit-section">
-        <input
-          className="artist-input"
-          value={newAct}
-          onChange={(e) => setNewAct(e.target.value)}
-        ></input>
-        <button className="btn add" onClick={add}>
-          +
-        </button>
-        <button className="btn login" onClick={login}>
-          👤
-        </button>
-        {(error && <pre>{error}</pre>) || null}
-      </div>
       {isLoading ? (
         <p className="spinner">🎧</p>
       ) : (
-        <ul className="lineup-container">
-          {lineup.map((val, i) => (
-            <li className="artist" key={i}>
-              <button className="btn remove" onClick={() => remove(i)}>
-                &times;
+        <>
+          <div className="edit-section">
+            {isLoggedOut ? (
+              <button className="btn login" onClick={login}>
+                Log In
               </button>
-              {val}
-            </li>
-          ))}
-        </ul>
+            ) : (
+              <>
+                <input
+                  className="artist-input"
+                  value={newAct}
+                  onChange={(e) => setNewAct(e.target.value)}
+                ></input>
+                <button className="btn add" onClick={add}>
+                  +
+                </button>
+              </>
+            )}
+            {(error && <pre>{error}</pre>) || null}
+          </div>
+          <ul className="lineup-container">
+            {lineup.map((val, i) => (
+              <li className="artist" key={i}>
+                {(!isLoggedOut && (
+                  <button className="btn remove" onClick={() => remove(i)}>
+                    &times;
+                  </button>
+                )) ||
+                  null}
+                {val}
+              </li>
+            ))}
+          </ul>
+        </>
       )}
+      <p className="uid">{UID}</p>
     </div>
   );
 };
